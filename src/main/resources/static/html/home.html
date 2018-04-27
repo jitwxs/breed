@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页-智慧水产养殖系统</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/toastr.css">
+    <link rel="stylesheet" href="../css/breed.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default col-sm-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation" class="active"><a href="/home">首页</a></li>
+            <li role="presentation"><a href="/pool">塘口管理</a></li>
+            <li role="presentation"><a href="/device">设备管理</a></li>
+            <li role="presentation"><a href="/system">系统设置</a></li>
+            <li role="presentation"><a href="/logout">退出</a></li>
+        </ul>
+    </div>
+    <!-- 主体 -->
+    <div class="panel panel-default col-sm-10">
+        <h3 class="custom-panel-title">欢迎使用智慧水产养殖系统</h3>
+        <div class="panel-heading">
+            <h4>欢迎用户：<span id="userName"></span><span style="float: right;">当前时间：<span id="nowDate"></span></span></h4>
+        </div>
+        <div class="panel-body">
+            <div>
+                <h5>
+                    您拥有塘口：<span id="poolNum"></span>个
+                    <a href="/pool">详细信息</a>
+                </h5>
+            </div>
+            <div>
+                <h5>
+                    您拥有设备：<span id="deviceNum"></span>个。运行：<span id="startDeviceNum"></span>个；停止：<span id="stopDeviceNum"></span>个
+                    <a href="/device">详细信息</a>
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/toastr.js"></script>
+<script src="../js/http.js"></script>
+<script src="../js/breed.js"></script>
+<script>
+    window.onload = function() {
+        var show = document.getElementById("nowDate");
+        setInterval(function() {
+            show.innerHTML = getNowDate();
+        }, 1000);
+    };
+
+    $(function () {
+        sendJson("get", "/home/", {}, false, function (res) {
+                if (res.status) {
+                    $("#userName").text(res.data.loginName);
+                    $("#poolNum").text(res.data.poolNum);
+                    $("#deviceNum").text(res.data.deviceNum);
+                    $("#startDeviceNum").text(res.data.startDeviceNum);
+                    $("#stopDeviceNum").text(res.data.stopDeviceNum);
+                }
+            },
+            function () {
+                toastr.error("系统错误");
+            });
+    });
+
+</script>
+
+</body>
+</html>
