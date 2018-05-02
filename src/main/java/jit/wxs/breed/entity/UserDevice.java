@@ -2,9 +2,10 @@ package jit.wxs.breed.entity;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.enums.FieldStrategy;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -44,8 +45,10 @@ public class UserDevice implements Serializable {
      * 设备状态（true：开启；false：关闭）
      */
     private Integer status;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createDate;
     @TableField(update = "now()")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateDate;
 
 

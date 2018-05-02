@@ -136,7 +136,7 @@
                             '                        <td>'+data[i].depth+'</td>\n' +
                             '                        <td>'+data[i].aquatic+'</td>\n' +
                             '                        <td>'+data[i].density+'</td>\n' +
-                            '                        <td>'+javaDateFormat(data[i].createDate)+'</td>\n' +
+                            '                        <td>'+data[i].createDate+'</td>\n' +
                             '                        <td>' +
                             '<button class="btn btn-primary" onclick="showDevice(this)">设备</button>' +
                             '<button class="btn btn-default" onclick="editPool(this)" style="margin-left: 10px">修改</button>' +
@@ -234,7 +234,7 @@
                             '                        <td>'+data[i].depth+'</td>\n' +
                             '                        <td>'+data[i].aquatic+'</td>\n' +
                             '                        <td>'+data[i].density+'</td>\n' +
-                            '                        <td>'+javaDateFormat(data[i].createDate)+'</td>\n' +
+                            '                        <td>'+data[i].createDate+'</td>\n' +
                             '                        <td>' +
                             '<button class="btn btn-primary" onclick="showDevice(this)">设备</button>' +
                             '<button class="btn btn-default" onclick="editPool(this)" style="margin-left: 10px">修改</button>' +
@@ -278,12 +278,11 @@
                             } else {
                                 status = "<span style='color: red'>STOP</span>";
                             }
-                            var updateDate = javaDateFormat(deviceList[i].updateDate);
                             tds += '<tr>\n' +
                                 '                                    <td>'+deviceList[i].imei+'</td>\n' +
                                 '                                    <td>'+status+'</td>\n' +
                                 '                                    <td>'+deviceList[i].params+'</td>\n' +
-                                '                                    <td>'+updateDate+'</td>\n' +
+                                '                                    <td>'+deviceList[i].updateDate+'</td>\n' +
                                 '                                </tr>';
                         }
                         var tableHtml = '<table class="table table-hover">\n' +

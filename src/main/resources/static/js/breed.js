@@ -17,12 +17,6 @@ function sendSms(tel) {
         });
 }
 
-// java的Date类型格式化
-function javaDateFormat(nS) {
-    var date = new Date(nS);
-    return date.Format("yyyy-MM-dd HH:mm:ss");
-}
-
 function getNowDate() {
     var date = new Date();
     return date.Format("yyyy-MM-dd HH:mm:ss");
