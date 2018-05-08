@@ -90,4 +90,12 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
     public int countDeviceWithStatus(String userId, Integer status) {
         return userDeviceMapper.selectCount(new EntityWrapper<UserDevice>().eq("user_id",userId).eq("status",status));
     }
+
+    @Override
+    public int changeStatus(String id, Integer status) {
+        UserDevice userDevice = userDeviceMapper.selectById(id);
+        userDevice.setStatus(status);
+        userDeviceMapper.updateById(userDevice);
+        return 0;
+    }
 }

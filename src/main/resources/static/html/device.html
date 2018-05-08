@@ -12,7 +12,7 @@
     <!-- 侧边栏 -->
     <div class="panel panel-default col-sm-2">
         <ul class="nav nav-pills nav-stacked">
-            <li role="presentation"><a href="/home">首页</a></li>
+            <li role="presentation"><a href="/">首页</a></li>
             <li role="presentation"><a href="/pool">塘口管理</a></li>
             <li role="presentation" class="active"><a href="/device">设备管理</a></li>
             <li role="presentation"><a href="/system">系统设置</a></li>
@@ -87,7 +87,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputIMEI" class="col-sm-2 control-label">EMEI</label>
+                                    <label for="inputIMEI" class="col-sm-2 control-label">IMEI</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="inputIMEI" name="imei">
                                     </div>
@@ -108,6 +108,58 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                             <button type="button" class="btn btn-primary" onclick="addDevice()">添加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 设备状态模态框 -->
+            <div class="modal fade" id="devStatusModel" tabindex="-1" role="dialog" aria-labelledby="devStatusModelLabel">
+                <div class="modal-dialog" role="document" style="width:1100px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="devStatusModelLabel">设备状态</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal">
+                                <input type="hidden" id="inputDevId">
+                                <div class="form-group">
+                                    <label for="inputIMEI1" class="col-sm-2 control-label">IMEI</label>
+                                    <div class="col-sm-10">
+                                        <p id="inputIMEI1" class="form-control-static"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">当前状态</label>
+                                    <div class="col-sm-5">
+                                        <p id="devStatusDiv" class="form-control-static"></p>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <button class="btn btn-info" onclick="updateDevStatus()" type="button">更新状态</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputStart" class="col-sm-2 control-label">定时启动（单位：秒）</label>
+                                    <div class="col-sm-5">
+                                        <input type="number" class="form-control" id="inputStart">
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <button class="btn btn-warning" onclick="setTimeStart()" type="button">设置</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputClose" class="col-sm-2 control-label">定时关闭（单位：秒）</label>
+                                    <div class="col-sm-5">
+                                        <input type="number" class="form-control" id="inputClose">
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <button class="btn btn-warning" onclick="setTimeClose()" type="button">设置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                         </div>
                     </div>
                 </div>
@@ -151,6 +203,7 @@
                             '                        <td>'+poolName+'</td>\n' +
                             '                        <td>'+data[i].updateDate+'</td>\n' +
                             '                        <td>' + poolButton + '\n' +
+                            '<button class="btn btn-info" onclick="showDevStatus(this)" style="margin-left: 10px">状态</button>\n' +
                             '<button class="btn btn-danger" onclick="deleteDevice(this)" style="margin-left: 10px">删除</button></td>\n' +
                             '                    </tr>';
                         html += tr + "\n";
@@ -246,7 +299,25 @@
             return false;
         }
     }
-    
+
+    // 获取指定设备状态
+    function getDevStatus(id) {
+        var devStatus = "<span style='color: gray'>NONE</span>";;
+        sendJson("get", "/pool/device/status/" + id, {}, false, function (res) {
+                if(res.status) {
+                    if(res.data === 1) {
+                        devStatus = "<span style='color: green'>START</span>";
+                    } else if(res.data === 0) {
+                        devStatus = "<span style='color: red'>STOP</span>";
+                    }
+                }
+            },
+            function () {
+                toastr.error("系统错误");
+            });
+        return devStatus;
+    }
+
     // 显示设备模态框
     function showDeviceModel() {
         sendJson("get", "/device/list", {}, false, function (res) {
@@ -258,6 +329,68 @@
                     }
                     document.getElementById("inputDeviceSelect").innerHTML = html;
                     $("#deviceModel").modal("show");
+                }
+            },
+            function () {
+                toastr.error("系统错误");
+            });
+    }
+
+    // 设备状态模态框中的更新状态方法
+    function updateDevStatus() {
+        var id = $("#inputDevId").val();
+        var status = getDevStatus(id);
+        $("#devStatusDiv").html(status);
+    }
+
+    // 显示设备状态模态框
+    function showDevStatus(obj) {
+        var id = $(obj).parent().parent().attr("data-id");
+        $("#inputDevId").val(id);
+
+        var imei = $(obj).parent().prev().prev().prev().prev().prev().html();
+        $("#inputIMEI1").text(imei);
+
+        var status = getDevStatus(id);
+        $("#devStatusDiv").html(status);
+
+        $("#devStatusModel").modal("show");
+    }
+
+    // 设置设备定时启动
+    function setTimeStart() {
+        var devId = $("#inputDevId").val();
+        var second = $("#inputStart").val();
+        if(second === "") {
+            toastr.warning("时间不能为空");
+            return false;
+        }
+        devTask(1,second,devId);
+    }
+
+    // 设置设备定时关闭
+    function setTimeClose() {
+        var second = $("#inputClose").val();
+        var devId = $("#inputDevId").val();
+        if(second === "") {
+            toastr.warning("时间不能为空");
+            return false;
+        }
+        devTask(0,second,devId);
+    }
+
+    /*
+        设备任务
+        type：类型；0：关闭；1：启动
+        second：秒数
+        devId：设备id
+     */
+    function devTask(type,second,devId) {
+        sendJson("post", "/pool/device/task", {type:type, second:second,id:devId}, false, function (res) {
+                if(res.status) {
+                    toastr.success("设置成功");
+                } else {
+                    toastr.error("设置失败");
                 }
             },
             function () {
@@ -311,6 +444,7 @@
                             '                        <td>'+poolName+'</td>\n' +
                             '                        <td>'+data[i].updateDate+'</td>\n' +
                             '                        <td>' + poolButton + '\n' +
+                            '<button class="btn btn-info" onclick="showDevStatus(this)" style="margin-left: 10px">状态</button>\n' +
                             '<button class="btn btn-danger" onclick="deleteDevice(this)" style="margin-left: 10px">删除</button></td>\n' +
                             '                    </tr>';
                         html += tr + "\n";

@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class PageController {
-    @GetMapping("/sso")
+    @GetMapping({"/sso"})
     public String showSSO() {
         return "sso";
     }
 
-    @RequestMapping("/home")
+    @RequestMapping("/")
     public String showHome() {
         return "home";
     }

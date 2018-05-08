@@ -71,4 +71,12 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @since 2018/4/27 12:20
      */
     int countDeviceWithStatus(String userId, Integer status);
+
+    /**
+     * 改变状态
+     * @param status 状态：0：关闭；1：启动
+     * @author jitwxs
+     * @since 2018/5/8 21:48
+     */
+    int changeStatus(String id, Integer status);
 }
