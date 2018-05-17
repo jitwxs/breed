@@ -2,7 +2,7 @@ package jit.wxs.breed.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import jit.wxs.breed.entity.SysUserRole;
+import jit.wxs.breed.domain.entity.SysUserRole;
 import jit.wxs.breed.mapper.SysUserRoleMapper;
 import jit.wxs.breed.service.SysUserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;

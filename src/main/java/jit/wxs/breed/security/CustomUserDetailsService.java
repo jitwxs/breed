@@ -1,8 +1,8 @@
 package jit.wxs.breed.security;
 
-import jit.wxs.breed.entity.SysRole;
-import jit.wxs.breed.entity.SysUser;
-import jit.wxs.breed.entity.SysUserRole;
+import jit.wxs.breed.domain.entity.SysRole;
+import jit.wxs.breed.domain.entity.SysUser;
+import jit.wxs.breed.domain.entity.SysUserRole;
 import jit.wxs.breed.service.SysRoleService;
 import jit.wxs.breed.service.SysUserRoleService;
 import jit.wxs.breed.service.SysUserService;

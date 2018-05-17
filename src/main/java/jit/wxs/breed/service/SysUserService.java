@@ -1,7 +1,7 @@
 package jit.wxs.breed.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import jit.wxs.breed.entity.SysUser;
+import jit.wxs.breed.domain.entity.SysUser;
 
 /**
  * <p>

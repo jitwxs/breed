@@ -62,20 +62,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // 匿名URL
         String[] anonUrl = {
-                "/getVerifyCode","/sendSms",
+                "/getVerifyCode","/sendSms","/checkTel",
                 "/registerCheck","/register",
                 "/loginCheck","/restPassword"
         };
         http.authorizeRequests()
                 // 如果有允许匿名的url，填在下面
                 .antMatchers(anonUrl).permitAll()
+                .antMatchers("/user/**").hasRole("用户")
+                .antMatchers("/provider/**").hasRole("供应商")
                 .anyRequest().authenticated()
                 .and()
                 // 设置登陆页
-                .formLogin().loginPage("/sso")
+                .formLogin().loginPage("/login")
                 // 设置登陆成功页
                 .defaultSuccessUrl("/")
-                .failureUrl("/sso/error").permitAll()
+                .failureUrl("/login/error").permitAll()
                 //登录名参数
                 .usernameParameter("loginName")
                 .and()
@@ -92,6 +94,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 设置拦截忽略文件夹，可以对静态资源放行
-        web.ignoring().antMatchers("/css/**", "/js/**");
+        web.ignoring().antMatchers("/assets/**");
     }
 }

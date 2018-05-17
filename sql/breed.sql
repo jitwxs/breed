@@ -11,7 +11,7 @@
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 09/05/2018 00:59:42
+ Date: 17/05/2018 20:23:58
 */
 
 SET NAMES utf8mb4;
@@ -24,21 +24,91 @@ DROP TABLE IF EXISTS `device`;
 CREATE TABLE `device`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备名称',
-  `model_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备型号',
+  `model` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备型号',
+  `type` int(11) NULL DEFAULT NULL COMMENT '设备类型',
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备描述',
   `create_date` datetime(0) NOT NULL,
   `update_date` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_type`(`type`) USING BTREE,
+  CONSTRAINT `fk_type` FOREIGN KEY (`type`) REFERENCES `device_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '设备表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of device
 -- ----------------------------
-INSERT INTO `device` VALUES ('1', '紫光增氧001号', 'ZG-ZY-001', '紫光增氧001号，功率大，覆盖广', '2018-04-25 21:18:00', NULL);
-INSERT INTO `device` VALUES ('2', '紫光增氧002号', 'ZG-ZY-002', '紫光增氧002号，功率小，精度高', '2018-04-25 21:18:44', NULL);
-INSERT INTO `device` VALUES ('3', '天河增氧A型', 'TIANHE-ZY-A', '天河增氧A型，延续天河一贯的高性价比', '2018-04-25 21:20:42', NULL);
-INSERT INTO `device` VALUES ('4', '富农X10', 'FUNONG-X10', '富农X10增氧机，含氧量高', '2018-04-25 21:21:39', NULL);
-INSERT INTO `device` VALUES ('5', '中民农药喷洒1代', 'ZHONGMIN-PS-P1', '覆盖率在同价位中较广', '2018-04-25 21:22:53', NULL);
+INSERT INTO `device` VALUES ('1', '紫光增氧001号', 'ZG-ZY-001', 4, '紫光增氧001号，功率大，覆盖广', '2018-04-25 21:18:00', NULL);
+INSERT INTO `device` VALUES ('2', '紫光增氧002号', 'ZG-ZY-002', 4, '紫光增氧002号，功率小，精度高', '2018-04-25 21:18:44', NULL);
+INSERT INTO `device` VALUES ('3', '天河增氧A型', 'TIANHE-ZY-A', 5, '天河增氧A型，延续天河一贯的高性价比', '2018-04-25 21:20:42', NULL);
+INSERT INTO `device` VALUES ('4', '富农X10', 'FUNONG-X10', 6, '富农X10增氧机，含氧量高', '2018-04-25 21:21:39', NULL);
+INSERT INTO `device` VALUES ('5', '紫光农药喷洒1代', 'ZHONGMIN-PS-P1', 7, '覆盖率在同价位中较广', '2018-04-25 21:22:53', NULL);
+
+-- ----------------------------
+-- Table structure for device_maintenance
+-- ----------------------------
+DROP TABLE IF EXISTS `device_maintenance`;
+CREATE TABLE `device_maintenance`  (
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `device_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备ID',
+  `imei` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备IMEI',
+  `profit` float(11, 0) NULL DEFAULT NULL COMMENT '收益',
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_date` datetime(0) NOT NULL,
+  `update_date` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_device`(`device_id`) USING BTREE,
+  CONSTRAINT `fk_device` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '设备维护表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for device_order
+-- ----------------------------
+DROP TABLE IF EXISTS `device_order`;
+CREATE TABLE `device_order`  (
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `device_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备ID',
+  `provider_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '供应商ID',
+  `user_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '购买者（用户）ID',
+  `imei` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备串号',
+  `price` float(10, 2) NULL DEFAULT NULL COMMENT '售价',
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_date` datetime(0) NOT NULL,
+  `update_date` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_provider_ID`(`provider_id`) USING BTREE,
+  INDEX `fk_device_id`(`device_id`) USING BTREE,
+  CONSTRAINT `fk_device_id` FOREIGN KEY (`device_id`) REFERENCES `device` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_providerid` FOREIGN KEY (`provider_id`) REFERENCES `sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '设备订单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of device_order
+-- ----------------------------
+INSERT INTO `device_order` VALUES ('a13213af23af3a2vaf23bf61x33134', '5', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 'GYTVLGH89P', 267.50, '无发票', '2018-05-02 18:21:33', NULL);
+INSERT INTO `device_order` VALUES ('ac8f299afafaba83cafa2bf61xx537', '3', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 'S35HBV9KH3', 185.40, NULL, '2018-05-17 18:19:55', NULL);
+INSERT INTO `device_order` VALUES ('afqr12131dac1231sac7yfaovad13', '1', '74d8f29914414d3d83c4072bf61b2537', '908ed25218dc4be588f285e5fed13b51', 'QAJU765V0P', 553.52, NULL, '2018-05-17 18:23:18', NULL);
+
+-- ----------------------------
+-- Table structure for device_type
+-- ----------------------------
+DROP TABLE IF EXISTS `device_type`;
+CREATE TABLE `device_type`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '描述',
+  `parent_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '设备类型表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of device_type
+-- ----------------------------
+INSERT INTO `device_type` VALUES (1, '增氧机', NULL);
+INSERT INTO `device_type` VALUES (2, '喷洒机', NULL);
+INSERT INTO `device_type` VALUES (3, '控制器', NULL);
+INSERT INTO `device_type` VALUES (4, '紫光', 1);
+INSERT INTO `device_type` VALUES (5, '天河', 1);
+INSERT INTO `device_type` VALUES (6, '富农', 2);
+INSERT INTO `device_type` VALUES (7, '紫光', 2);
 
 -- ----------------------------
 -- Table structure for persistent_logins
@@ -51,11 +121,6 @@ CREATE TABLE `persistent_logins`  (
   `last_used` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`series`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of persistent_logins
--- ----------------------------
-INSERT INTO `persistent_logins` VALUES ('17626014329', 'm5RmVRcQjV+UXPFU4CO6Zg==', 'Yu1r4rasPu+RDnhu2bozUQ==', '2018-05-08 16:14:22');
 
 -- ----------------------------
 -- Table structure for pool
@@ -79,12 +144,37 @@ CREATE TABLE `pool`  (
 -- ----------------------------
 -- Records of pool
 -- ----------------------------
-INSERT INTO `pool` VALUES ('33aac67096714cc0b4dab1fe8067f28f', '左侧塘口', 76, 12.3, '鲤鱼', 100, '610f5f8b19764a7fa7779d49a4cacc38', '2018-04-27 14:52:03', NULL);
 INSERT INTO `pool` VALUES ('62e086afed7043979a65396958e518ab', '西1号塘', 103.6, 7.98, '螃蟹', 50, '7b3e48298a0b4725a2313fa0b85c0774', '2018-04-27 14:11:39', '2018-04-27 14:20:13');
 INSERT INTO `pool` VALUES ('774eaf0b4ec04003abd67450ed37a41e', '南1号塘', 32.6, 4, '鲤鱼', 76, '7b3e48298a0b4725a2313fa0b85c0774', '2018-04-27 14:11:41', '2018-04-27 14:09:37');
 INSERT INTO `pool` VALUES ('85f020cf1ca74a3785a058b28c3bdb88', '东1号塘', 200.32, 19.7, '鲫鱼,草鱼', 223, '7b3e48298a0b4725a2313fa0b85c0774', '2018-04-26 15:06:49', '2018-04-27 13:53:07');
-INSERT INTO `pool` VALUES ('adfba13cf39e4a93bb7df3301d8d61f4', '右侧塘口', 15.3, 5.3, '龙虾', 30, '610f5f8b19764a7fa7779d49a4cacc38', '2018-04-27 14:52:31', NULL);
 INSERT INTO `pool` VALUES ('b8d5971f0a7441ee87537ebcbc852449', '北1号塘', 108.6, 23.6, '鲫鱼', 165, '7b3e48298a0b4725a2313fa0b85c0774', '2018-04-27 13:53:39', NULL);
+
+-- ----------------------------
+-- Table structure for provider_device
+-- ----------------------------
+DROP TABLE IF EXISTS `provider_device`;
+CREATE TABLE `provider_device`  (
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `provider_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '供应商ID',
+  `device_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备ID',
+  `stock` int(11) NULL DEFAULT NULL COMMENT '库存',
+  `sale_num` int(11) NULL DEFAULT NULL COMMENT '售出数量',
+  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `status` tinyint(1) NULL DEFAULT 1 COMMENT '状态（1：上架；0：下架）',
+  `create_date` datetime(0) NOT NULL,
+  `update_date` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_provider`(`provider_id`) USING BTREE,
+  CONSTRAINT `fk_provider` FOREIGN KEY (`provider_id`) REFERENCES `sys_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '供应商设备表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of provider_device
+-- ----------------------------
+INSERT INTO `provider_device` VALUES ('12x8f29914414d3s2vsd72bf61b2537', '74d8f29914414d3d83c4072bf61b2537', '1', 100, 26, '', 0, '2018-05-17 15:49:10', '2018-05-17 20:16:49');
+INSERT INTO `provider_device` VALUES ('23qagf29914414d3ssqh72bf61b227', '74d8f29914414d3d83c4072bf61b2537', '2', 60, 12, '', 0, '2018-05-17 16:09:03', '2018-05-17 20:18:55');
+INSERT INTO `provider_device` VALUES ('38a45986a39e4779ac5647f21a7cdff4', '74d8f29914414d3d83c4072bf61b2537', '5', 20, NULL, '哇咔咔                                    ', 1, '2018-05-17 17:35:14', NULL);
+INSERT INTO `provider_device` VALUES ('afa2f235143sbaet23edasqh72bf54', '74d8f29914414d3d83c4072bf61b2537', '3', 23, 0, NULL, 0, '2018-05-17 16:46:46', '2018-05-17 17:13:00');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -99,8 +189,8 @@ CREATE TABLE `sys_role`  (
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
-INSERT INTO `sys_role` VALUES ('ROLE_AREA_ADMIN', 'ROLE_地区管理员');
-INSERT INTO `sys_role` VALUES ('ROLE_SYS_ADMIN', 'ROLE_系统管理员');
+INSERT INTO `sys_role` VALUES ('ROLE_ADMIN', 'ROLE_管理员');
+INSERT INTO `sys_role` VALUES ('ROLE_PROVIDER', 'ROLE_供应商');
 INSERT INTO `sys_role` VALUES ('ROLE_USER', 'ROLE_用户');
 
 -- ----------------------------
@@ -123,9 +213,10 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('610f5f8b19764a7fa7779d49a4cacc38', NULL, 'wuxiangsheng', '2a6567e10b63ae7b17f4229d7fa4f5400ef3b6255f1c67362aae0dd3', '男', '', NULL, '2018-04-27 14:44:19', '2018-04-27 14:48:19');
-INSERT INTO `sys_user` VALUES ('74d8f29914414d3d83c4072bf61b2537', '18168404329', NULL, NULL, NULL, NULL, NULL, '2018-05-03 11:48:25', NULL);
-INSERT INTO `sys_user` VALUES ('7b3e48298a0b4725a2313fa0b85c0774', '17626014329', 'jitwxs', '190dc0a9bb80ed06de79d4058e68519ea327b0b3a30835eb28ac1fd7', '男', 'jitwxs@foxmail.com', 'https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/1.jpg', '2018-04-25 17:09:10', '2018-04-27 14:22:45');
+INSERT INTO `sys_user` VALUES ('74d8f29914414d3d83c4072bf61b2537', NULL, 'wxs', 'e5a2fcfcf3a01276e43cc0fb0fda79e7c36f217053196fb1dfe37d81', '男', 'wxs@foxmail.com', 'https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/邮箱.png', '2018-05-03 11:48:25', '2018-05-17 15:23:24');
+INSERT INTO `sys_user` VALUES ('7b3e48298a0b4725a2313fa0b85c0774', '18168404329', 'jitwxs', 'c37c6d9a886d4ba49b81f8c4b2dabdbbb4c2c17413b3202577bb1850', '男', 'jitwxs@foxmail.com', 'https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/1.jpg', '2018-04-25 17:09:10', '2018-05-17 01:17:50');
+INSERT INTO `sys_user` VALUES ('908ed25218dc4be588f285e5fed13b51', NULL, 'test', 'ab2038077d242abeed1c0024b1ed7bbf74537d74eb164a52b9098c15', NULL, NULL, NULL, '2018-05-17 10:43:29', NULL);
+INSERT INTO `sys_user` VALUES ('b2c440caee214af68fd6731f1a388e6f', '17626014329', 'demo', 'b95eaf9f742b0d442185b21c7fc93856ecd5fb60aa760334a1385834', '男', '17626014329@gmail.com', 'https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/邮箱.png', '2018-05-17 10:44:59', '2018-05-17 10:52:06');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -145,9 +236,10 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('99c2b9417dfa4786b6f60b6c3f7f46fe', '74d8f29914414d3d83c4072bf61b2537', 'ROLE_USER');
-INSERT INTO `sys_user_role` VALUES ('b8d5971f0a7441ee87532cacsacbc85', '7b3e48298a0b4725a2313fa0b85c0774', 'ROLE_AREA_ADMIN');
-INSERT INTO `sys_user_role` VALUES ('eb8267b8fe794cfbb402f639fa6a9c6d', '610f5f8b19764a7fa7779d49a4cacc38', 'ROLE_USER');
+INSERT INTO `sys_user_role` VALUES ('0f4653d8f8fb4f3098730ddaf14c0325', '908ed25218dc4be588f285e5fed13b51', 'ROLE_USER');
+INSERT INTO `sys_user_role` VALUES ('9155a7e2f46d4f7999cb1f062c480b47', 'b2c440caee214af68fd6731f1a388e6f', 'ROLE_USER');
+INSERT INTO `sys_user_role` VALUES ('99c2b9417dfa4786b6f60b6c3f7f46fe', '74d8f29914414d3d83c4072bf61b2537', 'ROLE_PROVIDER');
+INSERT INTO `sys_user_role` VALUES ('b8d5971f0a7441ee87532cacsacbc85', '7b3e48298a0b4725a2313fa0b85c0774', 'ROLE_USER');
 
 -- ----------------------------
 -- Table structure for user_device
@@ -175,15 +267,13 @@ CREATE TABLE `user_device`  (
 -- ----------------------------
 -- Records of user_device
 -- ----------------------------
-INSERT INTO `user_device` VALUES ('002eb711b190428387c8e580fb5a2476', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '1', 'QAJU765V0P', '{\"温度\":\"23.1°C\",\"溶氧浓度\":\"12.3mg/L\"}', 1, '2018-04-27 13:48:27', '2018-05-08 23:06:06');
-INSERT INTO `user_device` VALUES ('14c9c4d79b564d5bb606ab620311fae8', '7b3e48298a0b4725a2313fa0b85c0774', '62e086afed7043979a65396958e518ab', '5', 'GYTVLGH89P', '{\"剩余时间\":\"23min\",\"剩余药量\":\"2303g\"}', 1, '2018-04-27 13:48:06', '2018-05-04 11:11:59');
-INSERT INTO `user_device` VALUES ('4f6b73fbd12d43449b7bae1d10d887d6', '7b3e48298a0b4725a2313fa0b85c0774', '774eaf0b4ec04003abd67450ed37a41e', '1', '2D6JG9LM5W', '{\"温度\":\"21.3°C\",\"溶氧浓度\":\"18.5mg/L\"}', 0, '2018-04-27 13:46:35', '2018-04-27 14:07:31');
-INSERT INTO `user_device` VALUES ('51305489ad7b41da9f5a2683478482fc', '610f5f8b19764a7fa7779d49a4cacc38', 'adfba13cf39e4a93bb7df3301d8d61f4', '4', '4RT8KJN0PL', '{\"溶氧浓度\":\"23mg/L\",\"水体温度\":\"13.8°C\"}', 1, '2018-04-27 14:53:16', '2018-04-27 14:53:20');
-INSERT INTO `user_device` VALUES ('813180a2c75e4873a8dbedf8e5e8bfd0', '7b3e48298a0b4725a2313fa0b85c0774', '62e086afed7043979a65396958e518ab', '2', '2XSNJ9LFZ5', NULL, 0, '2018-05-04 10:52:49', '2018-05-04 10:52:54');
-INSERT INTO `user_device` VALUES ('820428b4e4ca43c1b065da9af183e187', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '1', 'QBVG54VKI8', '{\"温度\":\"18.8°C\",\"溶氧浓度\":\"16.3mg/L\"}', 1, '2018-04-27 13:48:53', '2018-04-27 13:54:12');
-INSERT INTO `user_device` VALUES ('b51fe0729abd40b99c5ce8d1b4815b23', '7b3e48298a0b4725a2313fa0b85c0774', '62e086afed7043979a65396958e518ab', '1', 'SCH4871VG8', '{\"温度\":\"22.5°C\",\"溶氧浓度\":\"13.2mg/L\"}', 1, '2018-05-04 10:53:17', '2018-05-04 10:53:20');
-INSERT INTO `user_device` VALUES ('c98216b5ac1e4c79b1a68594c7f93ed6', '7b3e48298a0b4725a2313fa0b85c0774', 'b8d5971f0a7441ee87537ebcbc852449', '3', 'S35HBV9KH3', '{\"设备温度\":\"16.23°C\",\"溶氧浓度\":\"16.65mg/L\"}', 1, '2018-04-27 13:46:55', '2018-04-27 13:54:16');
-INSERT INTO `user_device` VALUES ('d41a3dc9bdcc449f9f9fc652d596595e', '610f5f8b19764a7fa7779d49a4cacc38', '33aac67096714cc0b4dab1fe8067f28f', '2', '3R7YH9IKP6', '{\"溶氧浓度\":\"26.3mg/L\",\"水体温度\":\"15.8°C\"}', 1, '2018-04-27 14:52:50', '2018-04-27 14:52:56');
-INSERT INTO `user_device` VALUES ('ecde56342a944300984c838196c2e239', '7b3e48298a0b4725a2313fa0b85c0774', 'b8d5971f0a7441ee87537ebcbc852449', '4', '3DF8JIP0ND', NULL, 1, '2018-05-04 10:52:30', '2018-05-04 10:52:58');
+INSERT INTO `user_device` VALUES ('002eb711b190428387c8e580fb5a2476', '908ed25218dc4be588f285e5fed13b51', NULL, '1', 'QAJU765V0P', '{\"温度\":\"23.1°C\",\"溶氧浓度\":\"12.3mg/L\"}', 0, '2018-04-27 13:48:27', '2018-05-10 09:08:10');
+INSERT INTO `user_device` VALUES ('14c9c4d79b564d5bb606ab620311fae8', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '5', 'GYTVLGH89P', '{\"剩余时间\":\"23min\",\"剩余药量\":\"2303g\"}', 0, '2018-04-27 13:48:06', '2018-05-17 17:15:47');
+INSERT INTO `user_device` VALUES ('4f6b73fbd12d43449b7bae1d10d887d6', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '1', '2D6JG9LM5W', '{\"温度\":\"21.3°C\",\"溶氧浓度\":\"18.5mg/L\"}', 0, '2018-04-27 13:46:35', '2018-05-17 17:15:37');
+INSERT INTO `user_device` VALUES ('813180a2c75e4873a8dbedf8e5e8bfd0', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '2', '2XSNJ9LFZ5', NULL, 0, '2018-05-04 10:52:49', '2018-05-17 17:15:37');
+INSERT INTO `user_device` VALUES ('820428b4e4ca43c1b065da9af183e187', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '1', 'QBVG54VKI8', '{\"温度\":\"18.8°C\",\"溶氧浓度\":\"16.3mg/L\"}', 1, '2018-04-27 13:48:53', '2018-05-17 17:15:37');
+INSERT INTO `user_device` VALUES ('b51fe0729abd40b99c5ce8d1b4815b23', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '1', 'SCH4871VG8', '{\"温度\":\"22.5°C\",\"溶氧浓度\":\"13.2mg/L\"}', 1, '2018-05-04 10:53:17', '2018-05-17 17:15:37');
+INSERT INTO `user_device` VALUES ('c98216b5ac1e4c79b1a68594c7f93ed6', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '3', 'S35HBV9KH3', '{\"设备温度\":\"16.23°C\",\"溶氧浓度\":\"16.65mg/L\"}', 1, '2018-04-27 13:46:55', '2018-05-17 17:15:37');
+INSERT INTO `user_device` VALUES ('ecde56342a944300984c838196c2e239', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '4', '3DF8JIP0ND', NULL, 1, '2018-05-04 10:52:30', '2018-05-17 17:15:37');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -1,7 +1,7 @@
 package jit.wxs.breed.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import jit.wxs.breed.entity.Device;
+import jit.wxs.breed.domain.entity.Device;
 
 /**
  * <p>

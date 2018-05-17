@@ -1,7 +1,7 @@
 package jit.wxs.breed.activemq;
 
-import jit.wxs.breed.common.entity.Task;
-import jit.wxs.breed.common.utils.JsonUtils;
+import jit.wxs.breed.domain.Task;
+import jit.wxs.breed.utils.JsonUtils;
 import jit.wxs.breed.service.UserDeviceService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

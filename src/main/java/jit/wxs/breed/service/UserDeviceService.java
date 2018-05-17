@@ -1,7 +1,7 @@
 package jit.wxs.breed.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import jit.wxs.breed.entity.UserDevice;
+import jit.wxs.breed.domain.entity.UserDevice;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public interface UserDeviceService extends IService<UserDevice> {
      * @author jitwxs
      * @since 2018/4/27 9:40
      */
-    boolean unbindDevice(String id,String userId);
+    boolean unbindDevice(String id);
 
     /**
      * 绑定设备

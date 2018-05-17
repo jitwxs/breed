@@ -1,7 +1,7 @@
 package jit.wxs.breed.security;
 
-import jit.wxs.breed.common.utils.PasswordUtils;
-import jit.wxs.breed.entity.SysUser;
+import jit.wxs.breed.utils.PasswordUtils;
+import jit.wxs.breed.domain.entity.SysUser;
 import jit.wxs.breed.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

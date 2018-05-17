@@ -20,7 +20,8 @@ public class GeneratorServiceEntity {
         String packageName = "jit.wxs.breed";
         String[] tables = {
                 "sys_user","sys_user_role","sys_role",
-                "pool","device","user_device"
+                "device","device_maintenance","device_order",
+                "device_type","pool","provider_device","user_device"
         };
         boolean serviceNameStartWithI = false;//user -> UserService, 设置成true: user -> IUserService
         generateByTables(serviceNameStartWithI, packageName, tables);

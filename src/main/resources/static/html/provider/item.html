@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理-智慧水产养殖系统</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="../../assets/css/bootstrap-editable.css">
+    <link rel="stylesheet" href="../../assets/css/message.css">
+    <link rel="stylesheet" href="../../assets/css/breed.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default col-sm-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/">首页</a></li>
+            <li role="presentation" class="active"><a href="/provider/item">商品管理</a></li>
+            <li role="presentation"><a href="/provider/order">订单管理</a></li>
+            <li role="presentation"><a href="/provider/client">客户管理</a></li>
+            <li role="presentation"><a href="/provider/maintenance">设备维护</a></li>
+            <li role="presentation"><a href="/provider/system">系统设置</a></li>
+            <li role="presentation"><a href="/logout">退出</a></li>
+        </ul>
+    </div>
+    <!-- 主体 -->
+    <div class="panel panel-default col-sm-10">
+        <h3 class="custom-panel-title">商品列表</h3>
+        <div class="panel-heading">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="inputItemStatus">商品状态</label>
+                    <select class="form-control" id="inputItemStatus">
+                        <option value="">所有状态</option>
+                        <option value=true>已上架</option>
+                        <option value=false>已下架</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inputItemName" class="ml10">商品名</label>
+                    <input type="text" class="form-control" id="inputItemName">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="flushTable()">立即查找 <span class="glyphicon glyphicon-search"></span></button>
+            </form>
+        </div>
+        <div class="panel-body">
+            <div id="toolbar" class="btn-group">
+                <button id="btn_add" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新增商品
+                </button>
+                <button id="btn_up" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> 批量上架
+                </button>
+                <button id="btn_down" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 批量下架
+                </button>
+            </div>
+            <table id="tb_item"></table>
+        </div>
+        <!-- 新增商品模态框 -->
+        <div class="modal fade" id="itemAddModel" tabindex="-1" role="dialog" aria-labelledby="itemAddModelLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="itemAddModelLabel">新增商品</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="addItemForm">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">商品名</label>
+                                <div class="col-sm-3">
+                                    <select id="rootItemTypeSelect" class="form-control"></select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select id="secondItemTypeSelect" class="form-control"></select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select id="itemNameSelect" class="form-control" name="deviceId"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAddItemStock" class="col-sm-2 control-label">库存</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="inputAddItemStock" name="stock">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAddItemRemark" class="col-sm-2 control-label">备注</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" id="inputAddItemRemark" name="remark" minlength="3" style="resize:none">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="addItemBtn">新增</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 商品详细信息模态框 -->
+        <div class="modal fade" id="itemModel" tabindex="-1" role="dialog" aria-labelledby="itemModelLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="itemModelLabel">商品详情</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="inputItemNames" class="col-sm-2 control-label">商品名</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static" id="inputItemNames"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputItemModel" class="col-sm-2 control-label">商品型号</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static" id="inputItemModel"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputItemDesc" class="col-sm-2 control-label">商品描述</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static" id="inputItemDesc"></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 商品编辑模态框 -->
+        <div class="modal fade" id="itemEditModel" tabindex="-1" role="dialog" aria-labelledby="itemEditModelLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="itemEditModelLabel">编辑商品</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="editItemForm">
+                            <input type="hidden" id="inputEditItemId" name="id">
+                            <div class="form-group">
+                                <label for="inputEditItemName" class="col-sm-2 control-label">商品名</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static" id="inputEditItemName"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEditItemStock" class="col-sm-2 control-label">库存</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control" id="inputEditItemStock" name="stock">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="editItemBtn">更新</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../../assets/js/jquery.validate.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/bootstrap-table.min.js"></script>
+<script src="../../assets/js/bootstrap-editable.min.js"></script>
+<script src="../../assets/js/bootstrap-table-editable.min.js"></script>
+<script src="../../assets/js/bootstrap-table-export.min.js"></script>
+<script src="../../assets/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../assets/js/tableExport.min.js"></script>
+<script src="../../assets/js/http.js"></script>
+<script src="../../assets/js/message.js"></script>
+<script src="../../assets/js/breed.js"></script>
+<script>
+    $(function () {
+        // 初始化Table
+        var oTable = new TableInit();
+        oTable.Init();
+
+        //2、初始化Button的点击事件
+        var oButtonInit = new ButtonInit();
+        oButtonInit.Init();
+    });
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#tb_item').bootstrapTable({
+                url: '/provider/item/list',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮组id
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: false,                    //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端。后台分页时意义不大
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                // height: 750,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                showExport: true,                   //是否显示导出
+                exportDataType: "basic",            //导出的模式是当前页basic、所有数据all、选中数据selected。
+                columns: [{
+                    checkbox: true
+                }, {
+                    field: 'device.name',
+                    title: '商品名'
+                }, {
+                    field: 'stock',
+                    title: '库存',
+                    editable: {
+                        type: 'number',
+                        title: '库存',
+                        validate: function (v) {
+                            if (!v) return '库存不能为空';
+                        }
+                    }
+                }, {
+                    field: 'saleNum',
+                    title: '已售'
+                }, {
+                    field: 'status',
+                    title: '状态',
+                    formatter: statusFormatter
+                }, {
+                    field: 'remark',
+                    title: '备注'
+                }, {
+                    field: 'createDate',
+                    title: '上架时间'
+                }, {
+                    field: 'id',
+                    title: '操作',
+                    width: 120,
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter
+                }],
+                onEditableSave: function (field, row, oldValue, $el) { // 行更新。当前列的名称、当前行数据对象、更新前的值、编辑的当前单元格的jQuery对象
+                    sendJson("put", "/provider/item", row, false, function (res) {
+                        if(res.status) {
+                            $.message({message: "更新成功", type: 'success'});
+                            $("#itemEditModel").modal('hide');
+                            flushTable();
+                        } else {
+                            $.message({message: res.info, type: 'error'});
+                        }
+                    }, function () {
+                        $.message({message: '系统错误', type: 'error'});
+                    });
+                }
+            });
+        };
+
+        // 传递给后台的参数
+        oTableInit.queryParams = function (params) {
+            return {   //这里的键的名字和后台参数必须一致
+                rows: params.limit,                         //页面大小
+                page: (params.offset / params.limit) + 1,   //页码
+                status: $("#inputItemStatus").val(),
+                deviceName: $("#inputItemName").val()
+            };
+        };
+        return oTableInit;
+    };
+
+    var ButtonInit = function () {
+        var oInit = new Object();
+
+        oInit.Init = function () {
+            // 新增商品
+            $("#btn_add").click(function () {
+                sendJson("get", "/device/type/tree", null, false, function (res) {
+                    if(res.status) {
+                        var result = "";
+                        var data = res.data;
+                        for(var i=0;i<data.length; i++) {
+                            result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                        }
+                        $("#rootItemTypeSelect").html(result);
+
+                        // 一级改变的时候，清空二级和三级内容
+                        $("#secondItemTypeSelect").html("");
+                        $("#itemNameSelect").html("");
+
+                        if(data.length > 0 ) {
+                            // 准备二级下拉框
+                            prepareSecondSelectItemType(data[0].id);
+                        }
+
+                        $("#itemAddModel").modal('show');
+                    } else {
+                        $.message({message: res.info, type: 'error'});
+                    }
+                }, function () {
+                    $.message({message: '系统错误', type: 'error'});
+                });
+            });
+            
+            // 批量上架
+            $("#btn_up").click(function () {
+                var row = $('#tb_item').bootstrapTable("getSelections");
+                if (row.length > 0) {
+                    var ids = new Array();
+                    for (var i = 0; i < row.length; i++) {
+                        if(!row[i].status)
+                            ids.push(row[i].id);
+                    }
+                    if(ids.length === 0) {
+                        $.message({message: "选中设备中没有可上架的", type: 'warning'});
+                    } else {
+                        sendArray("post", "/provider/item/up", {"ids": ids}, false, function (res) {
+                            if(res.status) {
+                                $.message({message: "上架成功", type: 'success'});
+                                flushTable();
+                            } else {
+                                $.message({message: res.info, type: 'error'});
+                            }
+                        }, function () {
+                            $.message({message: '系统错误', type: 'error'});
+                        });
+                    }
+                } else {
+                    $.message({message: "未选中任何商品", type: 'warning'});
+                }
+            });
+
+            // 批量下架
+            $("#btn_down").click(function () {
+                var row = $('#tb_item').bootstrapTable("getSelections");
+                if(row.length > 0) {
+                    var ids = new Array();
+                    for (var i = 0; i < row.length; i++) {
+                        if(row[i].status)
+                            ids.push(row[i].id);
+                    }
+                    if(ids.length === 0) {
+                        $.message({message: "选中设备中没有可下架的", type: 'warning'});
+                    } else {
+                        sendArray("post", "/provider/item/down", {"ids": ids}, false, function (res) {
+                            if(res.status) {
+                                $.message({message: "下架成功", type: 'success'});
+                                flushTable();
+                            } else {
+                                $.message({message: res.info, type: 'error'});
+                            }
+                        }, function () {
+                            $.message({message: '系统错误', type: 'error'});
+                        });
+                    }
+                } else {
+                    $.message({message: "未选中任何商品", type: 'warning'});
+                }
+            });
+        };
+        return oInit;
+    };
+
+    //操作栏的格式化
+    function actionFormatter(value, row, index) {
+        var id = "'" + value + "'";
+        var deviceId = "'" + row.deviceId + "'";
+
+        return '<button class="btn btn-xs btn-info" onclick="aboutItem('+deviceId+')" title="关于商品"><span class="glyphicon glyphicon-info-sign"></span></button>\n' +
+            '<button class="btn btn-xs btn-primary" onclick="editItem('+id+')" title="编辑商品"><span class="glyphicon glyphicon-pencil"></span></button></td>\n';
+    }
+
+    //商品状态的格式化
+    function statusFormatter(value, row, index) {
+        if(value) {
+            return "<span style='color: green'>已上架</span>";
+        } else {
+            return  "<span style='color: red'>已下架</span>";
+        }
+    }
+
+    function flushTable() {
+        $("#tb_item").bootstrapTable('refresh',{url : '/provider/item/list'} );
+    }
+
+    // 获取商品信息
+    function aboutItem(deviceId) {
+        sendJson("get", "/device/" + deviceId, null, false, function (res) {
+            if(res.status) {
+                var item = res.data;
+                $("#inputItemNames").text(item.name);
+                $("#inputItemModel").text(item.model);
+                $("#inputItemDesc").text(item.description);
+                $("#itemModel").modal('show');
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    }
+
+    // 编辑商品
+    function editItem(id) {
+        sendJson("get", "/provider/item/" + id, null, false, function (res) {
+            if(res.status) {
+                var item = res.data;
+                $("#inputEditItemId").val(id);
+                $("#inputEditItemName").text(item.device.name);
+                $("#inputEditItemStock").val(item.stock);
+
+                $("#itemEditModel").modal('show');
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    }
+    
+    $("#editItemBtn").click(function () {
+        sendJson("put", "/provider/item", $("#editItemForm").serialize(), false, function (res) {
+            if(res.status) {
+                $.message({message: "更新成功", type: 'success'});
+                $("#itemEditModel").modal('hide');
+                flushTable();
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+
+    });
+    
+    // 一级类别发生改变
+    $("#rootItemTypeSelect").change(function () {
+        var rootId = $("#rootItemTypeSelect").val();
+        prepareSecondSelectItemType(rootId);
+    });
+    
+    // 二级类别发生改变
+    $("#secondItemTypeSelect").change(function () {
+        var rootId = $("#secondItemTypeSelect").val();
+        sendJson("get", "/device/type/"+rootId, null, false, function (res) {
+            if(res.status) {
+                var result = "";
+                var data = res.data;
+                for(var i=0;i<data.length; i++) {
+                    result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                }
+                $("#itemNameSelect").html(result);
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    });
+
+    // 准备二级菜单和内容
+    function prepareSecondSelectItemType(rootId) {
+        sendJson("get", "/device/type/tree/"+rootId, null, false, function (res) {
+            if(res.status) {
+                var result = "";
+                var data = res.data;
+                for(var i=0;i<data.length; i++) {
+                    result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                }
+                $("#secondItemTypeSelect").html(result);
+
+                $("#itemNameSelect").html("");
+                if(data.length > 0) {
+                    sendJson("get", "/device/type/"+data[0].id, null, false, function (res) {
+                        if(res.status) {
+                            var result = "";
+                            var data = res.data;
+                            for(var i=0;i<data.length; i++) {
+                                result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                            }
+                            $("#itemNameSelect").html(result);
+                        } else {
+                            $.message({message: res.info, type: 'error'});
+                        }
+                    }, function () {
+                        $.message({message: '系统错误', type: 'error'});
+                    });
+                }
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    }
+    
+    // 新增商品
+    $("#addItemBtn").click(function () {
+        sendJson("post", "/provider/item", $("#addItemForm").serialize(), false, function (res) {
+            if(res.status) {
+                $.message({message: "添加成功", type: 'success'});
+                $("#itemAddModel").modal('hide');
+                flushTable();
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    });
+</script>
+</body>
+</html>

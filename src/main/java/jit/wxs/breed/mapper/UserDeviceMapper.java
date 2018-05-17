@@ -1,7 +1,7 @@
 package jit.wxs.breed.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
-import jit.wxs.breed.entity.UserDevice;
+import jit.wxs.breed.domain.entity.UserDevice;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

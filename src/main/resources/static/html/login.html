@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录-智慧水产养殖系统</title>
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="../assets/css/message.css">
+    <link rel="stylesheet" href="../assets/css/breed.css">
+</head>
+<body>
+<div class="container">
+    <h3 style="text-align: center">欢迎使用智慧水产养殖系统</h3>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="tabList">
+        <li role="presentation" class="active"><a href="#login" aria-controls="login" role="tab" data-toggle="tab">登陆系统</a></li>
+        <li role="presentation"><a href="#register" aria-controls="register" role="tab" data-toggle="tab">用户注册</a></li>
+        <li role="presentation"><a href="#findPassword" aria-controls="findPassword" role="tab" data-toggle="tab">找回密码</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="login">
+            <!-- 登陆面板 -->
+            <div class="panel panel-primary">
+                <h3 class="custom-panel-title">登陆系统</h3>
+                <div class="panel-body">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>提示！</strong> 您可以通过以下方式完成登陆：（1）用户名+密码（2）手机号+密码（3）手机号+验证码
+                    </div>
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>重要！</strong> 如果您使用（3）注册，那么需要绑定用户名和密码后才能使用（1）和（2）登陆
+                    </div>
+                    <form class="form-horizontal" id="loginForm" method="post" action="login">
+                        <div class="form-group">
+                            <label for="loginName" class="col-sm-2 control-label">登录名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="loginName" name="loginName" placeholder="用户名/手机号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginCode" class="col-sm-2 control-label">验证码</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="loginCode" name="code" placeholder="验证码">
+                            </div>
+                            <div class="col-sm-5">
+                                <button type="button" class="btn btn-default" onclick="sendSmsByLogin()">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">登陆</button>
+                                <label style="margin-left: 50px"><input type="checkbox" name="remember-me">自动登录</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="register">
+            <!-- 注册面板 -->
+            <div class="panel panel-primary">
+                <h3 class="custom-panel-title">用户注册</h3>
+                <div class="panel-body">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>提示！</strong>您可以通过以下方式完成注册：（1）用户名+密码注册（2）直接使用手机号+验证码登陆，自动注册
+                    </div>
+                    <form class="form-horizontal" id="regForm">
+                        <div class="form-group">
+                            <label for="regName" class="col-sm-2 control-label">注册名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="regName" name="username" placeholder="不能为纯数字">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="regPassword" name="password"
+                                       placeholder="请输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="regPassword1" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="regPassword1" name="password1" placeholder="请确认密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="verifyCode" class="col-sm-2 control-label">验证码</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="verifyCode" name="verifyCode" placeholder="验证码">
+                            </div>
+                            <div class="col-sm-5">
+                                <img src="getVerifyCode" title="看不清，请点我" onclick="refresh(this)" onmouseover="mouseover(this)"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">注册</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="findPassword">
+            <!-- 找回密码面板 -->
+            <div class="panel panel-primary">
+                <h3 class="custom-panel-title">找回密码</h3>
+                <div class="panel-body">
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>重要！</strong> 使用本功能需要您使用手机号注册或已经绑定了手机号码。如果未绑定手机号码，请联系客服。
+                    </div>
+                    <form class="form-horizontal" id="resetPasswordForm">
+                        <div class="form-group">
+                            <label for="resetTel" class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="resetTel" name="tel" placeholder="注册/绑定的手机号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginName" class="col-sm-2 control-label">验证码</label>
+                            <div class="col-sm-5">
+                                <input type="text" class="form-control" id="resetCode" name="code" placeholder="验证码">
+                            </div>
+                            <div class="col-sm-5">
+                                <button type="button" class="btn btn-default" onclick="sendSmsByRest()">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="resetPassword" class="col-sm-2 control-label">新密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="resetPassword" name="password"
+                                       placeholder="请输入新密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="resetPassword1" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="resetPassword1" name="password1" placeholder="请确认密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">重置密码</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/jquery.validate.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/bootstrap-table.min.js"></script>
+<script src="../assets/js/bootstrap-table-export.min.js"></script>
+<script src="../assets/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../assets/js/tableExport.min.js"></script>
+<script src="../assets/js/http.js"></script>
+<script src="../assets/js/message.js"></script>
+<script src="../assets/js/breed.js"></script>
+<script>
+    // 登陆模块获取验证码
+    function sendSmsByLogin() {
+        var loginName = $("#loginName").val();
+        sendSms(loginName);
+    }
+    // 重置密码模块获取验证码
+    function sendSmsByRest() {
+        var tel = $("#resetTel").val();
+        sendSms(tel);
+    }
+
+    $().ready(function() {
+        $.validator.addMethod("disNum", function(value, element) {
+            return isNaN(value);
+        }, "不能为纯数字");
+
+        // 登录
+        $("#loginForm").validate({
+            rules: {
+                loginName: "required"
+            },
+            messages: {
+                loginName: "登录名不能为空"
+            },
+            submitHandler: function (form) {
+                sendJson("post", "/loginCheck", $("#loginForm").serialize(), false, function (res) {
+                    if (!res.status) {
+                        $.message({message: res.info, type: 'error'});
+                    } else {
+                        form.submit();
+                    }
+                }, function () {
+                    $.message({message: '未知错误', type: 'error'});
+                });
+            }
+        });
+        // 注册
+        $("#regForm").validate({
+            rules: {
+                username: {
+                    required: true,
+                    disNum: true
+                },
+                password: "required",
+                password1: {
+                    required: true,
+                    equalTo: "#regPassword"
+                },
+                verifyCode: "required"
+            },
+            messages: {
+                username: {
+                    required:"用户名不能为空"
+                },
+                password: "密码不能为空",
+                password1: {
+                    required: "密码不能为空",
+                    equalTo: "两次密码输入不一致"
+                },
+                verifyCode: "验证码不能为空"
+            },
+            submitHandler: function (form) {
+                var regName = $("#regName").val();
+                var verifyCode = $("#verifyCode").val();
+                sendJson("post", "/registerCheck", {"regName": regName, "verifyCode": verifyCode}, false, function (res) {
+                    if (!res.status) {
+                        $.message({message: res.info, type: 'error'});
+                    } else {
+                        sendJson("post", "/register", $("#regForm").serialize(), false, function (res) {
+                            if (!res.status) {
+                                $.message({message: res.info, type: 'error'});
+                            } else {
+                                $.message({message: '注册成功', type: 'success'});
+                                $('#tabList a[href="#login"]').tab('show');
+                            }
+                        }, function () {
+                            $.message({message: '未知错误', type: 'error'});
+                        });
+                    }
+                }, function () {
+                    $.message({message: '未知错误', type: 'error'});
+                });
+            }
+        });
+        // 重置密码
+        $("#resetPasswordForm").validate({
+            rules: {
+                tel: {
+                    required: true,
+                    disNum: false
+                },
+                password: "required",
+                password1: {
+                    required: true,
+                    equalTo: "#resetPassword"
+                },
+                code: "required"
+            },
+            messages: {
+                tel: "手机号不能为空",
+                password: "密码不能为空",
+                password1: {
+                    required: "密码不能为空",
+                    equalTo: "两次密码输入不一致"
+                },
+                code: "验证码不能为空"
+            },
+            submitHandler: function (form) {
+                var tel = $("#resetTel").val();
+                sendJson("post", "/checkTel", {"tel": tel}, false, function (res) {
+                    if (res.status) {
+                        $.message({message: "该手机号尚未注册", type: 'error'});
+                    } else {
+                        sendJson("post", "/restPassword", $("#resetPasswordForm").serialize(), false, function (res) {
+                            if (!res.status) {
+                                $.message({message: res.info, type: 'error'});
+                            } else {
+                                $.message({message: "重置成功", type: 'success'});
+                                $('#tabList a[href="#login"]').tab('show');
+                            }
+                        }, function () {
+                            $.message({message: '未知错误', type: 'error'});
+                        });
+                    }
+                }, function () {
+                    $.message({message: '未知错误', type: 'error'});
+                });
+            }
+        });
+    });
+
+    function refresh(obj) {
+        obj.src = "getVerifyCode?" + Math.random();
+    }
+
+    function mouseover(obj) {
+        obj.style.cursor = "pointer";
+    }
+</script>
+</body>
+</html>

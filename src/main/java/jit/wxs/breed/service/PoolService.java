@@ -1,7 +1,7 @@
 package jit.wxs.breed.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import jit.wxs.breed.entity.Pool;
+import jit.wxs.breed.domain.entity.Pool;
 
 import java.util.List;
 

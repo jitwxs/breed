@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>塘口管理-智慧水产养殖系统</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/bootstrap-table.css">
+    <link rel="stylesheet" href="../../assets/css/message.css">
+    <link rel="stylesheet" href="../../assets/css/breed.css">
+</head>
+<body>
+<div class="container-fluid">
+    <!-- 侧边栏 -->
+    <div class="panel panel-default col-sm-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/">首页</a></li>
+            <li role="presentation" class="active"><a href="/user/pool">塘口管理</a></li>
+            <li role="presentation"><a href="/user/device">设备管理</a></li>
+            <li role="presentation"><a href="/user/system">系统设置</a></li>
+            <li role="presentation"><a href="/logout">退出</a></li>
+        </ul>
+    </div>
+    <!-- 主体 -->
+    <div class="panel panel-default col-sm-10">
+        <h3 class="custom-panel-title">塘口列表</h3>
+        <div class="panel-heading">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label for="inputPoolName">塘口名</label>
+                    <input type="text" class="form-control" id="inputPoolName">
+                </div>
+                <div class="form-group">
+                    <label for="inputPoolAquatic" class="ml10">水产</label>
+                    <input type="text" class="form-control" id="inputPoolAquatic">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="flushTable()">立即查找 <span class="glyphicon glyphicon-search"></span></button>
+            </form>
+        </div>
+        <div class="panel-body">
+            <div id="toolbar" class="btn-group">
+                <button id="btn_add" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 添加塘口
+                </button>
+                <button id="btn_delete" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 批量删除
+                </button>
+            </div>
+            <table id="tb_pool"></table>
+            <!-- 塘口设备模态框 -->
+            <div class="modal fade" id="deviceModel" tabindex="-1" role="dialog" aria-labelledby="deviceModelLabel">
+                <div class="modal-dialog" role="document" style="width:1100px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="deviceModelLabel">设备列表</h4>
+                        </div>
+                        <div class="modal-body" id="deviceModelBody">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 塘口模态框 -->
+            <div class="modal fade" id="poolModel" tabindex="-1" role="dialog" aria-labelledby="poolModelLabel">
+                <div class="modal-dialog" role="document" style="width:1100px">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="poolModelLabel">添加/修改塘口</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" id="poolForm">
+                                <input type="hidden" id="inputId" name="id">
+                                <div class="form-group">
+                                    <label for="inputName" class="col-sm-2 control-label">名称</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputName" name="name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAreas" class="col-sm-2 control-label">面积（亩）</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" id="inputAreas" name="areas">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputDepth" class="col-sm-2 control-label">深度（米）</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" id="inputDepth" name="depth">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputAquatic" class="col-sm-2 control-label">水产品种（多个用逗号分隔）</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="inputAquatic" name="aquatic">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputDensity" class="col-sm-2 control-label">投放密度（尾/亩）</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" class="form-control" id="inputDensity" name="density">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="addPool()">添加/修改</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../../assets/js/jquery.validate.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/bootstrap-table.min.js"></script>
+<script src="../../assets/js/bootstrap-table-export.min.js"></script>
+<script src="../../assets/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="../../assets/js/tableExport.min.js"></script>
+<script src="../../assets/js/http.js"></script>
+<script src="../../assets/js/message.js"></script>
+<script src="../../assets/js/breed.js"></script>
+<script>
+    $(function () {
+        // 初始化Table
+        var oTable = new TableInit();
+        oTable.Init();
+
+        //2、初始化Button的点击事件
+        var oButtonInit = new ButtonInit();
+        oButtonInit.Init();
+    });
+
+    var TableInit = function () {
+        var oTableInit = new Object();
+        //初始化Table
+        oTableInit.Init = function () {
+            $('#tb_pool').bootstrapTable({
+                url: '/user/pool/list',                  //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                toolbar: '#toolbar',                //工具按钮组id
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: false,                    //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                queryParams: oTableInit.queryParams,//传递参数（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端。后台分页时意义不大
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                // height: 750,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+                showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                showExport: true,                   //是否显示导出
+                exportDataType: "basic",            //导出的模式是当前页basic、所有数据all、选中数据selected。
+                columns: [{
+                    checkbox: true
+                }, {
+                    field: 'name',
+                    title: '名称'
+                }, {
+                    field: 'areas',
+                    title: '面积（亩）'
+                }, {
+                    field: 'depth',
+                    title: '深度（米）',
+                    width: 200
+                }, {
+                    field: 'aquatic',
+                    title: '水产品种'
+                }, {
+                    field: 'density',
+                    title: '投放密度（尾/亩）'
+                }, {
+                    field: 'createDate',
+                    title: '创建时间'
+                }, {
+                    field: 'id',
+                    title: '操作',
+                    width: 120,
+                    align: 'center',
+                    valign: 'middle',
+                    formatter: actionFormatter
+                }]
+            });
+        };
+
+        // 传递给后台的参数
+        oTableInit.queryParams = function (params) {
+            return {   //这里的键的名字和后台参数必须一致
+                rows: params.limit,                         //页面大小
+                page: (params.offset / params.limit) + 1,   //页码
+                name: $("#inputPoolName").val(),
+                aquatic: $("#inputPoolAquatic").val()
+            };
+        };
+        return oTableInit;
+    };
+
+
+    var ButtonInit = function () {
+        var oInit = new Object();
+
+        oInit.Init = function () {
+            // 添加塘口
+            $("#btn_add").click(function () {
+                $("#poolModel").modal("show");
+            });
+            // 删除塘口
+            $("#btn_delete").click(function () {
+                var row = $('#tb_pool').bootstrapTable("getSelections");
+                // 获取所有等待派送（1）的选中订单
+                if(row.length > 0) {
+                    var ids = new Array();
+                    for (var i = 0; i < row.length; i++) {
+                        ids.push(row[i].id);
+                    }
+                    sendArray("post", "/user/pool/delete", {"ids": ids}, false, function (res) {
+                        if(res.status) {
+                            $.message({message: "删除成功", type: 'success'});
+                            flushTable();
+                        } else {
+                            $.message({message: res.info, type: 'error'});
+                        }
+                    }, function () {
+                        $.message({message: '系统错误', type: 'error'});
+                    });
+                }
+            });
+        };
+        return oInit;
+    };
+
+    //操作栏的格式化
+    function actionFormatter(value, row, index) {
+        var id = "'" + value + "'";
+        return '<button class="btn btn-xs btn-info" onclick="editPool('+id+')" title="查看设备"><span class="glyphicon glyphicon-search"></span></button>\n' +
+            '         <button class="btn btn-xs btn-danger" onclick="deletePool('+id+')" title="删除"><span class="glyphicon glyphicon-remove"></span></button>';
+    }
+
+    function flushTable() {
+        $("#tb_pool").bootstrapTable('refresh',{url : '/user/pool/list'} );
+    }
+
+    // 删除塘口
+    function deletePool(id) {
+        var msg = "删除后该塘口设备将被解绑，确定要删除吗";
+        if(confirm(msg)) {
+            sendJson("post", "/user/pool/delete", {ids: id}, false, function (res) {
+                    if(res.status) {
+                        $.message({message: "删除成功", type: 'success'});
+                        flushTable();
+                    } else {
+                        $.message({message: res.info, type: 'error'});
+                    }
+                },
+                function () {
+                    $.message({message: "系统错误", type: 'error'});
+                });
+        } else {
+            return false;
+        }
+    }
+
+    // 修改塘口
+    function editPool(id) {
+        sendJson("get", "/user/pool/" + id, {}, false, function (res) {
+                if(res.status) {
+                    var pool = res.data;
+                    $("#inputId").val(pool.id);
+                    $("#inputName").val(pool.name);
+                    $("#inputAreas").val(pool.areas);
+                    $("#inputDepth").val(pool.depth);
+                    $("#inputAquatic").val(pool.aquatic);
+                    $("#inputDensity").val(pool.density);
+                    $('#poolModel').modal('show');
+                } else {
+                    $.message({message: res.info, type: 'error'});
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+    
+    function addPool() {
+        var poolId = $("#inputId").val();
+        var ajaxType = "";
+        if(poolId === "") {
+            ajaxType = "post";
+        } else {
+            ajaxType = "put";
+        }
+
+        sendJson(ajaxType, "/user/pool", $("#poolForm").serialize(), false, function (res) {
+                if(res.status) {
+                    window.location.reload();
+                } else {
+                    $.message({message: res.info, type: 'error'});
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+        $('#poolModel').modal('hide');
+    }
+</script>
+</body>
+</html>

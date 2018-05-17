@@ -2,7 +2,7 @@ package jit.wxs.breed.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import jit.wxs.breed.entity.Pool;
+import jit.wxs.breed.domain.entity.Pool;
 import jit.wxs.breed.mapper.PoolMapper;
 import jit.wxs.breed.service.PoolService;
 import org.springframework.beans.factory.annotation.Autowired;

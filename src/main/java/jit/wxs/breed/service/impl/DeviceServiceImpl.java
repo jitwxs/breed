@@ -1,11 +1,15 @@
 package jit.wxs.breed.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import jit.wxs.breed.entity.Device;
+import jit.wxs.breed.domain.entity.Device;
 import jit.wxs.breed.mapper.DeviceMapper;
 import jit.wxs.breed.service.DeviceService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +29,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         Device device = deviceMapper.selectById(id);
 
         return device.getName();
+    }
+
+    @Override
+    public List<Device> listByName(String name) {
+        return deviceMapper.selectList(new EntityWrapper<Device>()
+            .like("name", name));
     }
 }

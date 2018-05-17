@@ -1,7 +1,9 @@
 package jit.wxs.breed.service;
 
 import com.baomidou.mybatisplus.service.IService;
-import jit.wxs.breed.entity.Device;
+import jit.wxs.breed.domain.entity.Device;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +20,6 @@ public interface DeviceService extends IService<Device> {
      * @since 2018/4/26 15:48
      */
     String getName(String id);
+
+    List<Device> listByName(String name);
 }

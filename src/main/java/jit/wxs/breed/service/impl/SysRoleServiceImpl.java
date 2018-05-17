@@ -1,7 +1,7 @@
 package jit.wxs.breed.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import jit.wxs.breed.entity.SysRole;
+import jit.wxs.breed.domain.entity.SysRole;
 import jit.wxs.breed.mapper.SysRoleMapper;
 import jit.wxs.breed.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;

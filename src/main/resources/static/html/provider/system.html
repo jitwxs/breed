@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>系统设置-智慧水产养殖系统</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/message.css">
+    <link rel="stylesheet" href="../../assets/css/breed.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default col-sm-2">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/">首页</a></li>
+            <li role="presentation"><a href="/provider/item">商品管理</a></li>
+            <li role="presentation"><a href="/provider/order">订单管理</a></li>
+            <li role="presentation"><a href="/provider/client">客户管理</a></li>
+            <li role="presentation"><a href="/provider/maintenance">设备维护</a></li>
+            <li role="presentation" class="active"><a href="/provider/system">系统设置</a></li>
+            <li role="presentation"><a href="/logout">退出</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-10">
+        <!-- 用户信息面板 -->
+        <div class="panel panel-primary">
+            <h3 class="custom-panel-title">个人信息</h3>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">用户名</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="username"></span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">手机号</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="tel"></span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">性别</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="sex"></span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">邮箱</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="email"></span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">头像</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><img id="icon" style="width: 80px;height: 80px" class="img-circle"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">拥有权限</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static"><span id="userRoles"></span></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-info" type="button" onclick="showUserInfoModel()">个性化设置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- 信息补全面板 -->
+        <div id="infoSupplyPanel" class="panel panel-primary hidden">
+            <h3 class="custom-panel-title">补全信息</h3>
+            <div class="panel-body">
+                <!-- 设置用户名模块 -->
+                <div class="row hidden" id="setUserNameDiv">
+                    <div class="alert alert-danger" role="alert">
+                        重要：系统检测到您没有设置用户名，设置后可以使用用户名登陆。用户名唯一，一经设置，无法修改，请谨慎输入
+                    </div>
+                    <form class="form-horizontal" id="bindUsernameForm" method="post" action="/auth/username">
+                        <div class="form-group">
+                            <label for="username1" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="username1" name="username" placeholder="不能为纯数字">
+                                <span id="helpUserName" class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">设置用户名</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br>
+                <!-- 设置密码模块 -->
+                <div class="row hidden" id="setPasswordDiv">
+                    <div class="alert alert-danger" role="alert">
+                        重要：系统检测到您没有设置密码，设置后可以使用密码登陆<br>
+                    </div>
+                    <form class="form-horizontal" id="setPasswordForm">
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password1" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="请确认密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">设置密码</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br>
+                <!-- 设置手机号码模块 -->
+                <div class="row hidden" id="setTelDiv">
+                    <div class="alert alert-danger" role="alert">
+                        重要：系统检测到您没有设置手机号，设置后可以使用手机号登陆，找回密码功能<br>
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="tel1" class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="tel1" name="tel" placeholder="手机号">
+                                <span id="helpTel" class="help-block"></span>
+                            </div>
+                            <div class=" col-sm-4">
+                                <button type="button" class="btn btn-info" onclick="checkTelByBind()">验证合法性</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="telCode" class="col-sm-2 control-label">验证码</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="telCode" name="code" placeholder="验证码">
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default" onclick="sendSmsByBind()">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-default" onclick="bindTel()">绑定手机号</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br>
+            </div>
+        </div>
+        <!-- 信息修改面板 -->
+        <div class="panel panel-primary">
+            <h3 class="custom-panel-title">修改信息</h3>
+            <div class="panel-body">
+                <!-- 修改密码模块 -->
+                <div class="row hidden" id="modifyPasswordDiv">
+                    <div class="alert alert-info" role="alert">
+                        修改密码
+                    </div>
+                    <form class="form-horizontal" id="modifyPasswordForm">
+                        <div class="form-group">
+                            <label for="oldPassword" class="col-sm-2 control-label">原始密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="请输入原始密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword" class="col-sm-2 control-label">新密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="请输入新密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword1" class="col-sm-2 control-label">确认密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" class="form-control" id="newPassword1" name="newPassword1" placeholder="请确认新密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">修改密码</button>
+                            </div>
+                        </div>
+                    </form>
+                </div><br>
+                <!-- 修改手机模块 -->
+                <div class="row hidden" id="modifyTelDiv">
+                    <div class="alert alert-info" role="alert">
+                        修改绑定手机
+                    </div>
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="newTel" class="col-sm-2 control-label">原始手机号</label>
+                            <div class="col-sm-10">
+                                <label class="col-sm-2 control-label" id="oldTel"></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newTel" class="col-sm-2 control-label">新手机号</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="newTel" name="tel" placeholder="新手机号">
+                                <span id="helpNewTel" class="help-block"></span>
+                            </div>
+                            <div class=" col-sm-4">
+                                <button type="button" class="btn btn-info" onclick="checkTelByModify()">验证合法性</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newTelCode" class="col-sm-2 control-label">验证码</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="newTelCode" name="code" placeholder="验证码">
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-default" onclick="sendSmsByModify()">获取验证码</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="button" class="btn btn-default" onclick="modifyTel()">修改手机号</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- 个性化设置模态框 -->
+        <div class="modal fade" id="userInfoModel" tabindex="-1" role="dialog" aria-labelledby="userInfoModelLabel">
+            <div class="modal-dialog" role="document" style="width:1100px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="userInfoModelLabel">个性化设置</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" id="userInfoForm">
+                            <input type="hidden" id="inputId" name="id">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="sex" value="男"> 男
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="sex" value="女"> 女
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-sm-2 control-label">邮箱</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmail">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputIcon" class="col-sm-2 control-label">头像</label>
+                                <div class="col-sm-5">
+                                    <img class="img-circle" id="inputIcon" src="" style="width: 80px;height: 80px">
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="file" id="inputUploadImg">
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="saveUserInfo()">设置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../assets/js/jquery-3.2.1.min.js"></script>
+<script src="../../assets/js/jquery.validate.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/http.js"></script>
+<script src="../../assets/js/message.js"></script>
+<script src="../../assets/js/breed.js"></script>
+<script>
+    $(function () {
+        sendJson("get", "/auth", {}, true, function (res) {
+                if (!res.status) {
+                    $.message({message: res.info, type: 'error'});
+                } else {
+                    var user = res.data.user;
+                    var roles = res.data.roles;
+                    var userName = user.username;
+                    var userPassword = user.password;
+                    var userTel = user.tel;
+
+                    $("#username").text(userName);
+                    $("#tel").text(userTel);
+                    $("#sex").text(user.sex);
+                    $("#email").text(user.email);
+                    $("#icon").attr("src", user.icon);
+
+                    var roleStr = "";
+                    for(var i=0;i<roles.length;i++)
+                        roleStr += roles[i].name + " ";
+                    $("#userRoles").text(roleStr);
+
+                    // 如果用户名、密码、手机号有一个不存在，就开启补全信息面板
+                    if(userName == null || userPassword == null || userTel == null) {
+                        $("#infoSupplyPanel").removeClass("hidden");
+                    }
+
+                    // 如果用户名为空，开启设置用户名div
+                    if(userName == null) {
+                        $("#setUserNameDiv").removeClass("hidden");
+                    }
+                    // 如果密码为空，开启设置密码div；如果非空，开启修改密码div
+                    if(userPassword == null) {
+                        $("#setPasswordDiv").removeClass("hidden");
+                    } else {
+                        $("#modifyPasswordDiv").removeClass("hidden");
+                    }
+                    // 如果手机号为空，开启设置手机号div；如果非空，开启修改手机号div
+                    if(userTel == null) {
+                        $("#setTelDiv").removeClass("hidden");
+                    } else {
+                        $("#modifyTelDiv").removeClass("hidden");
+                        $("#oldTel").text(user.tel);
+                    }
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    });
+
+    $().ready(function() {
+        // 纯数字：返回false
+        $.validator.addMethod("disNum", function(value, element) {
+            return isNaN(value);
+        }, "不能为纯数字");
+
+        // 设置用户名
+        $("#bindUsernameForm").validate({
+            rules: {
+                username: {
+                    required: true,
+                    disNum: true
+                }
+            },
+            messages: {
+                username: {
+                    required: "用户名不能为空",
+                    disNum: "用户名不能为纯数字"
+                }
+            },
+            submitHandler: function (form) {
+                sendJson("post", "/auth/username", $("#bindUsernameForm").serialize() , false, function (res) {
+                    if (!res.status) {
+                        $.message({message: res.info, type: 'error'});
+                    } else {
+                        $.message({message: "设置成功", type: 'success'});
+                        window.location.reload();
+                    }
+                }, function () {
+                    $.message({message: "系统错误", type: 'error'});
+                });
+            }
+        });
+        // 设置密码
+        $("#setPasswordForm").validate( {
+            rules: {
+                password: "required",
+                password1: {
+                    required: true,
+                    equalTo: "#password"
+                }
+            },
+            messages: {
+                password: "密码不能为空",
+                password1: {
+                    required: "密码不能为空",
+                    equalTo: "两次密码不一致"
+                }
+            },
+            submitHandler: function (form) {
+                sendJson("post", "/auth/password", $("#setPasswordForm").serialize(), false, function (res) {
+                        if (!res.status) {
+                            $.message({message: res.info, type: 'error'});
+                        } else {
+                            $.message({message: "设置成功", type: 'success'});
+                            window.location.reload();
+                        }
+                    },
+                    function () {
+                        $.message({message: "系统错误", type: 'error'});
+                    });
+            }
+        });
+        // 修改密码
+        $("#modifyPasswordForm").validate( {
+            rules: {
+                oldPassword: "required",
+                newPassword: "required",
+                newPassword1: {
+                    required: true,
+                    equalTo: "#newPassword"
+                }
+            },
+            messages: {
+                oldPassword: "原始密码不能为空",
+                newPassword: "新密码不能为空",
+                newPassword1: {
+                    required: "新密码不能为空",
+                    equalTo: "新密码不一致"
+                }
+            },
+            submitHandler: function (form) {
+                sendJson("patch", "/auth/password",$("#modifyPasswordForm").serialize() , false, function (res) {
+                        if (!res.status) {
+                            $.message({message: res.info, type: 'error'});
+                        } else {
+                            $.message({message: "修改成功，即将重新登陆", type: 'success'});
+                            setTimeout("new function(){window.location.href='/logout'}","3000");
+                        }
+                    },
+                    function () {
+                        $.message({message: "系统错误", type: 'error'});
+                    });
+            }
+        });
+    });
+
+    // 显示个性化设置模态框
+    function showUserInfoModel() {
+        sendJson("get", "/auth", {}, false, function (res) {
+                if (res.status) {
+                    var user = res.data.user;
+                    if(user.sex != null) {
+                        $("input:radio[name='sex'][value="+user.sex+"]").attr('checked','true');
+                    }
+                    $("#inputEmail").val(user.email);
+                    $("#inputIcon").attr("src",user.icon);
+                    $("#userInfoModel").modal("show");
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+
+    var file,fileName,fileSize;
+    $("#inputUploadImg").change(function () {
+        file = this.files[0];
+        fileName = file.name;
+        fileSize = file.size;
+    });
+
+    // 保存个性化设置
+    function saveUserInfo() {
+        var formData = new FormData();
+        formData.append("email", $("#inputEmail").val());
+        formData.append("sex",$("input[name='sex']:checked").val());
+
+        if(file != null) {
+            // 1、验证文件后缀
+            var pictureSuffix = new Array("bmp", "png", "jpg", "jpeg", "gif");
+            var point = fileName.lastIndexOf(".");
+            var type = fileName.substr(point).toLowerCase();
+            type = type.substr(1, type.length);
+
+            var flag = false;
+            for (var i = 0; i < pictureSuffix.length; i++) {
+                if (pictureSuffix[i] === type) {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag) {
+                $.message({message: "图片格式错误", type: 'warning'});
+                return false;
+            }
+
+            //2、验证文件大小
+            if (fileSize / (1024 * 1024) > 2) {
+                $.message({message: "大小超过2MB", type: 'warning'});
+                return false;
+            }
+            formData.append("file",file);
+        }
+
+        sendFile("/auth",formData,true,function (res) {
+            if(res.status) {
+                $.message({message: "设置成功", type: 'success'});
+                $("#userInfoModel").modal("hide");
+                window.location.reload();
+            } else {
+                $.message({message: "设置失败", type: 'error'});
+            }
+        },function () {
+            $.message({message: "系统错误", type: 'error'});
+        });
+    }
+
+    // 绑定手机号模块的发送验证码
+    function sendSmsByBind() {
+        var tel = $("#tel1").val();
+        sendSms(tel);
+    }
+
+    // 修改手机号模块的发送验证码
+    function sendSmsByModify() {
+        var tel = $("#newTel").val();
+        sendSms(tel);
+    }
+
+    // 绑定手机号码模块的手机号校验
+    function checkTelByBind() {
+        var tel = $("#tel1").val();
+        var pattern = /^1[34578]\d{9}$/;
+        if (!pattern.test(tel)) {
+            $("#helpTel").text("手机号不合法");
+            $("#helpTel").attr("style","color:red;");
+            return false;
+        }
+
+        sendJson("post", "/checkTel", {"tel": tel}, false, function (res) {
+                if (!res.status) {
+                    $("#helpTel").text(res.info);
+                    $("#helpTel").attr("style","color:red;");
+                } else {
+                    $("#helpTel").text("通过验证");
+                    $("#helpTel").attr("style","color:green;");
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+
+    // 修改手机号码模块的手机号校验
+    function checkTelByModify() {
+        var tel = $("#newTel").val();
+        var pattern = /^1[34578]\d{9}$/;
+        if (!pattern.test(tel)) {
+            $("#helpNewTel").text("手机号不合法");
+            $("#helpNewTel").attr("style","color:red;");
+            return false;
+        }
+
+        sendJson("post", "/checkTel", {"tel": tel}, false, function (res) {
+                if (!res.status) {
+                    $("#helpNewTel").text(res.info);
+                    $("#helpNewTel").attr("style","color:red;");
+                } else {
+                    $("#helpNewTel").text("通过验证");
+                    $("#helpNewTel").attr("style","color:green;");
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+
+    // 绑定手机号
+    function bindTel() {
+        var tel = $("#tel1").val();
+        var code = $("#telCode").val();
+        sendJson("post", "/auth/tel", {"tel": tel, "code":code}, false, function (res) {
+                if (!res.status) {
+                    $.message({message: res.info, type: 'error'});
+                } else {
+                    $.message({message: "绑定成功", type: 'success'});
+                    window.location.reload();
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+
+    // 修改手机号
+    function modifyTel() {
+        var tel = $("#newTel").val();
+        var code = $("#newTelCode").val();
+        sendJson("post", "/auth/tel", {"tel": tel, "code":code}, false, function (res) {
+                if (!res.status) {
+                    $.message({message: res.info, type: 'error'});
+                } else {
+                    $.message({message: "修改成功，即将重新登陆", type: 'success'});
+                    setTimeout("new function(){window.location.href='/logout'}","3000");
+                }
+            },
+            function () {
+                $.message({message: "系统错误", type: 'error'});
+            });
+    }
+</script>
+</body>
+</html>

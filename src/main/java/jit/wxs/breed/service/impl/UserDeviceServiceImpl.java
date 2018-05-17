@@ -2,8 +2,7 @@ package jit.wxs.breed.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import jit.wxs.breed.common.entity.GlobalFunction;
-import jit.wxs.breed.entity.UserDevice;
+import jit.wxs.breed.domain.entity.UserDevice;
 import jit.wxs.breed.mapper.UserDeviceMapper;
 import jit.wxs.breed.service.UserDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,11 +52,8 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
     }
 
     @Override
-    public boolean unbindDevice(String id, String userId) {
+    public boolean unbindDevice(String id) {
         UserDevice userDevice = userDeviceMapper.selectById(id);
-        if(!userId.equals(userDevice.getUserId())) {
-            return false;
-        }
         userDevice.setPoolId(null);
         Integer i = userDeviceMapper.updateById(userDevice);
         return i != 0;
@@ -66,6 +62,10 @@ public class UserDeviceServiceImpl extends ServiceImpl<UserDeviceMapper, UserDev
     @Override
     public boolean bindDevice(String id, String poolId) {
         UserDevice userDevice = userDeviceMapper.selectById(id);
+        // 如果设备已经绑定，无法继续绑定
+        if(userDevice.getPoolId() != null) {
+            return false;
+        }
         userDevice.setPoolId(poolId);
         Integer i = userDeviceMapper.updateById(userDevice);
 

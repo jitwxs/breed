@@ -1,0 +1,16 @@
+.custom-panel-title {
+    text-align: center;
+}
+
+/* jquery validate 验证 */
+input.error { border: 1px solid red; }
+textarea.error { border: 1px solid red; }
+label.error {
+    padding-left: 16px;
+
+    padding-bottom: 2px;
+
+    font-weight: bold;
+
+    color: #EA5200;
+}
