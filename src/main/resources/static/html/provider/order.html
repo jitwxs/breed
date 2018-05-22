@@ -118,33 +118,30 @@
                 showRefresh: true,                  //是否显示刷新按钮
                 minimumCountColumns: 2,             //最少允许的列数
                 clickToSelect: true,                //是否启用点击选中行
-                // height: 750,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                // height: 750,                     //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
                 uniqueId: "id",                     //每一行的唯一标识，一般为主键列
                 showToggle:false,                   //是否显示详细视图和列表视图的切换按钮
                 cardView: false,                    //是否显示详细视图
-                detailView: false,                  //是否显示父子表
+                detailView: true,                   //是否显示父子表
                 showExport: true,                   //是否显示导出
                 exportDataType: "basic",            //导出的模式是当前页basic、所有数据all、选中数据selected。
                 columns: [{
                     checkbox: true
                 }, {
-                    field: 'deviceName',
-                    title: '商品'
+                    field: 'id',
+                    title: '订单号'
                 }, {
                     field: 'userName',
                     title: '客户'
                 }, {
-                    field: 'imei',
-                    title: 'IMEI'
-                }, {
                     field: 'price',
-                    title: '价格'
+                    title: '总价格'
                 }, {
                     field: 'remark',
                     title: '备注'
                 }, {
                     field: 'createDate',
-                    title: '创建时间'
+                    title: '下单时间'
                 }, {
                     field: 'id',
                     title: '操作',
@@ -152,7 +149,11 @@
                     align: 'center',
                     valign: 'middle',
                     formatter: actionFormatter
-                }]
+                }],
+                //注册加载子表的事件。index：表当前行的行索引;row：父表当前行的Json数据对象。$detail：当前行下面创建的新行里面的td对象。
+                onExpandRow: function (index, row, $detail) {
+                    oTableInit.InitSubTable(index, row, $detail);
+                }
             });
         };
 
@@ -169,6 +170,39 @@
                 endDate: $("#selectEndDate").val()
             };
         };
+
+        oTableInit.InitSubTable = function (index, row, $detail) {
+            var orderId = row.id;
+            var cur_table = $detail.html('<table></table>').find('table');
+            $(cur_table).bootstrapTable({
+                url: '/provider/order/desc',
+                method: 'get',
+                queryParams: { orderId: orderId },
+                ajaxOptions: { orderId: orderId },
+                clickToSelect: true,
+                detailView: false,//父子表
+                uniqueId: "id",
+                pagination: true,                   //是否显示分页（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber:1,
+                pageSize: 10,
+                pageList: [10, 25],
+                columns: [{
+                    field: 'deviceName',
+                    title: '设备名'
+                }, {
+                    field: 'imei',
+                    title: '设备串号'
+                }, {
+                    field: 'price',
+                    title: '价格'
+                }, {
+                    field: 'remark',
+                    title: '备注'
+                } ]
+            });
+        };
+
         return oTableInit;
     };
 

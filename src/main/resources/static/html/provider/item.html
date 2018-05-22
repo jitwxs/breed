@@ -58,37 +58,36 @@
         </div>
         <!-- 新增商品模态框 -->
         <div class="modal fade" id="itemAddModel" tabindex="-1" role="dialog" aria-labelledby="itemAddModelLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog" role="document" style="width:800px;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="itemAddModelLabel">新增商品</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" id="addItemForm">
+                        <form class="form-horizontal">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">商品名</label>
+                                <label class="col-sm-1 control-label">商品</label>
                                 <div class="col-sm-3">
                                     <select id="rootItemTypeSelect" class="form-control"></select>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <select id="secondItemTypeSelect" class="form-control"></select>
                                 </div>
-                                <div class="col-sm-3">
-                                    <select id="itemNameSelect" class="form-control" name="deviceId"></select>
+                                <div class="col-sm-4">
+                                    <select id="itemNameSelect" class="form-control"></select>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputAddItemStock" class="col-sm-2 control-label">库存</label>
-                                <div class="col-sm-10">
-                                    <input type="number" class="form-control" id="inputAddItemStock" name="stock">
+                                <label for="inputAddItemStock" class="col-sm-1 control-label">库存</label>
+                                <div class="col-sm-11">
+                                    <input type="number" class="form-control" id="inputAddItemStock">
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="inputAddItemRemark" class="col-sm-2 control-label">备注</label>
-                                <div class="col-sm-10">
-                                    <textarea class="form-control" id="inputAddItemRemark" name="remark" minlength="3" style="resize:none">
-                                    </textarea>
+                                <label for="editor1" class="col-sm-1 control-label">备注</label>
+                                <div id="editor1" class="col-sm-11">
+                                    <p>请在此处填写商品的备注</p>
                                 </div>
                             </div>
                         </form>
@@ -138,15 +137,15 @@
         </div>
         <!-- 商品编辑模态框 -->
         <div class="modal fade" id="itemEditModel" tabindex="-1" role="dialog" aria-labelledby="itemEditModelLabel">
-            <div class="modal-dialog" role="document">
+            <div class="modal-dialog" role="document" style="width:800px;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="itemEditModelLabel">编辑商品</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-horizontal" id="editItemForm">
-                            <input type="hidden" id="inputEditItemId" name="id">
+                        <form class="form-horizontal">
+                            <input type="hidden" id="inputEditItemId">
                             <div class="form-group">
                                 <label for="inputEditItemName" class="col-sm-2 control-label">商品名</label>
                                 <div class="col-sm-10">
@@ -156,7 +155,12 @@
                             <div class="form-group">
                                 <label for="inputEditItemStock" class="col-sm-2 control-label">库存</label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" id="inputEditItemStock" name="stock">
+                                    <input type="number" class="form-control" id="inputEditItemStock">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editor2" class="col-sm-1 control-label">备注</label>
+                                <div id="editor2" class="col-sm-11">
                                 </div>
                             </div>
                         </form>
@@ -180,10 +184,12 @@
 <script src="../../assets/js/bootstrap-table-export.min.js"></script>
 <script src="../../assets/js/bootstrap-table-zh-CN.min.js"></script>
 <script src="../../assets/js/tableExport.min.js"></script>
+<script src="../../assets/js/wangEditor.min.js"></script>
 <script src="../../assets/js/http.js"></script>
 <script src="../../assets/js/message.js"></script>
 <script src="../../assets/js/breed.js"></script>
 <script>
+    var editor1,editor2;
     $(function () {
         // 初始化Table
         var oTable = new TableInit();
@@ -192,6 +198,16 @@
         //2、初始化Button的点击事件
         var oButtonInit = new ButtonInit();
         oButtonInit.Init();
+
+        // 3、初始化富文本编辑器
+        var E = window.wangEditor;
+        editor1 = new E('#editor1');
+        editor1.customConfig.uploadImgServer = '/auth/editor/upload';  // 图片上传url
+        editor1.create();
+
+        editor2 = new E('#editor2');
+        editor2.customConfig.uploadImgServer = '/auth/editor/upload';  // 图片上传url
+        editor2.create();
     });
 
     var TableInit = function () {
@@ -427,6 +443,7 @@
                 $("#inputEditItemId").val(id);
                 $("#inputEditItemName").text(item.device.name);
                 $("#inputEditItemStock").val(item.stock);
+                editor2.txt.html(item.remark);
 
                 $("#itemEditModel").modal('show');
             } else {
@@ -438,7 +455,10 @@
     }
     
     $("#editItemBtn").click(function () {
-        sendJson("put", "/provider/item", $("#editItemForm").serialize(), false, function (res) {
+        var id = $("#inputEditItemId").val();
+        var stock = $("#inputEditItemStock").val();
+        var remark = editor2.txt.html();
+        sendJson("put", "/provider/item", {id:id,stock:stock,remark:remark}, false, function (res) {
             if(res.status) {
                 $.message({message: "更新成功", type: 'success'});
                 $("#itemEditModel").modal('hide');
@@ -515,7 +535,10 @@
     
     // 新增商品
     $("#addItemBtn").click(function () {
-        sendJson("post", "/provider/item", $("#addItemForm").serialize(), false, function (res) {
+        var deviceId = $("#itemNameSelect").val();
+        var stock = $("#inputAddItemStock").val();
+        var remark = editor1.txt.html();
+        sendJson("post", "/provider/item", {deviceId:deviceId,stock:stock,remark:remark}, false, function (res) {
             if(res.status) {
                 $.message({message: "添加成功", type: 'success'});
                 $("#itemAddModel").modal('hide');

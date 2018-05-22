@@ -39,7 +39,7 @@ public class ItemController {
         wrapper.eq("provider_id", globalFunction.getCurrentUserId());
 
         Page<ProviderDevice> selectPage = providerDeviceService.selectPage(new Page<>(page, rows),wrapper);
-        Map<String,Object> map = new HashMap<>();
+        Map<String,Object> map = new HashMap<>(16);
         map.put("total", selectPage.getTotal());
         map.put("rows", globalFunction.providerDevice2Dto(selectPage.getRecords()));
         return map;

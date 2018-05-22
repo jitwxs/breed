@@ -9,6 +9,7 @@ import jit.wxs.breed.domain.dto.DeviceOrderDto;
 import jit.wxs.breed.domain.dto.ProviderDeviceDto;
 import jit.wxs.breed.domain.dto.UserDeviceDto;
 import jit.wxs.breed.domain.entity.*;
+import jit.wxs.breed.service.DeviceOrderDescService;
 import jit.wxs.breed.service.DeviceService;
 import jit.wxs.breed.service.PoolService;
 import jit.wxs.breed.service.SysUserService;
@@ -40,6 +41,8 @@ public class GlobalFunction {
     }
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private DeviceOrderDescService deviceOrderDescService;
     @Autowired
     private PoolService poolService;
     @Autowired
@@ -162,10 +165,10 @@ public class GlobalFunction {
     public DeviceOrderDto deviceOrder2Dto(DeviceOrder deviceOrder) {
         DeviceOrderDto dto = new DeviceOrderDto();
         BeanUtils.copyProperties(deviceOrder, dto);
-        Device device = deviceService.selectById(deviceOrder.getDeviceId());
-        SysUser user = userService.selectById(deviceOrder.getUserId());
-        dto.setDeviceName(device.getName());
-        dto.setUserName(user.getUsername());
+        SysUser user1 = userService.selectById(deviceOrder.getUserId());
+        SysUser user2 = userService.selectById(deviceOrder.getProviderId());
+        dto.setUserName(user1.getUsername());
+        dto.setProviderName(user2.getUsername());
 
         return dto;
     }

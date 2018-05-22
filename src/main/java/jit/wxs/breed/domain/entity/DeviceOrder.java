@@ -20,10 +20,6 @@ public class DeviceOrder implements Serializable {
 
     private String id;
     /**
-     * 设备ID
-     */
-    private String deviceId;
-    /**
      * 供应商ID
      */
     private String providerId;
@@ -31,10 +27,6 @@ public class DeviceOrder implements Serializable {
      * 购买者（用户）ID
      */
     private String userId;
-    /**
-     * 设备串号
-     */
-    private String imei;
     /**
      * 售价
      */
@@ -58,14 +50,6 @@ public class DeviceOrder implements Serializable {
         this.id = id;
     }
 
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
     public String getProviderId() {
         return providerId;
     }
@@ -80,14 +64,6 @@ public class DeviceOrder implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
     }
 
     public Float getPrice() {
@@ -125,15 +101,13 @@ public class DeviceOrder implements Serializable {
     @Override
     public String toString() {
         return "DeviceOrder{" +
-        ", id=" + id +
-        ", deviceId=" + deviceId +
-        ", providerId=" + providerId +
-        ", userId=" + userId +
-        ", imei=" + imei +
-        ", price=" + price +
-        ", remark=" + remark +
-        ", createDate=" + createDate +
-        ", updateDate=" + updateDate +
-        "}";
+                "id='" + id + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", price=" + price +
+                ", remark='" + remark + '\'' +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                '}';
     }
 }

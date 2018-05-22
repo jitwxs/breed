@@ -24,7 +24,7 @@ public class GeneratorServiceEntity {
                 "device_type","pool","provider_device","user_device"
         };
         boolean serviceNameStartWithI = false;//user -> UserService, 设置成true: user -> IUserService
-        generateByTables(serviceNameStartWithI, packageName, tables);
+        generateByTables(serviceNameStartWithI, packageName, "device_order_desc");
     }
 
     private void generateByTables(boolean serviceNameStartWithI, String packageName, String... tableNames) {

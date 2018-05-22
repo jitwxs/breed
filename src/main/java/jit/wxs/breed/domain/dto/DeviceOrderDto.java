@@ -8,22 +8,14 @@ import jit.wxs.breed.domain.entity.DeviceOrder;
  */
 public class DeviceOrderDto extends DeviceOrder {
     /**
-     * 设备名
+     * 供应商名
      */
-    private String deviceName;
+    private String providerName;
 
     /**
      * 客户名
      */
     private String userName;
-
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
 
     public String getUserName() {
         return userName;
@@ -31,5 +23,13 @@ public class DeviceOrderDto extends DeviceOrder {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
     }
 }

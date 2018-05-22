@@ -2,8 +2,10 @@ package jit.wxs.breed.domain.entity;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -29,6 +31,14 @@ public class Device implements Serializable {
     private String model;
 
     private int type;
+
+    /**
+     * 设备图片，多个用空格分隔
+     */
+    private String picUrl;
+
+    @TableField(exist = false)
+    private String[] picUrls;
     /**
      * 设备描述
      */
@@ -95,6 +105,26 @@ public class Device implements Serializable {
         this.type = type;
     }
 
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public String[] getPicUrls() {
+        if(StringUtils.isNotBlank(this.picUrl)) {
+            return this.picUrl.trim().split(",");
+        } else {
+            return null;
+        }
+    }
+
+    public void setPicUrls(String[] picUrls) {
+        this.picUrls = picUrls;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
@@ -102,6 +132,8 @@ public class Device implements Serializable {
                 ", name='" + name + '\'' +
                 ", model='" + model + '\'' +
                 ", type=" + type +
+                ", picUrl='" + picUrl + '\'' +
+                ", picUrls=" + Arrays.toString(picUrls) +
                 ", description='" + description + '\'' +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.support.StandardMultipartHttpServletReq
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -260,5 +261,47 @@ public class AuthController {
         userService.updateById(user);
 
         return Msg.ok();
+    }
+
+    /**
+     * wangEditor上传
+     * @author jitwxs
+     * @since 2018/5/22 18:30
+     */
+    @PostMapping("/editor/upload")
+    public Map upload(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>(16);
+        List<String> data = new ArrayList<>();
+
+        StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
+        // 遍历文件参数（即formData的file）
+        Iterator<String> iterator = req.getFileNames();
+
+        try {
+            while(iterator.hasNext()) {
+                MultipartFile file = req.getFile(iterator.next());
+                // 获取流
+                InputStream in = file.getInputStream();
+                // 准备ObjectMetadata
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType(file.getContentType());
+                metadata.setContentLength(file.getSize());
+
+                // 上传到COS
+                CosClientUtils myCosClient = new CosClientUtils(secretId,secretKey,regionName);
+                String url = myCosClient.upload(bucketName, in,metadata, picUploadPath + "/" + file.getOriginalFilename());
+
+                data.add(url);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            map.put("errno",1);
+            return map;
+        }
+
+        map.put("errno",0);
+        map.put("data", data);
+        return map;
     }
 }
