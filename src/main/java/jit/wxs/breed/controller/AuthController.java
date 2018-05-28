@@ -107,6 +107,7 @@ public class AuthController {
                 case "sex":
                     user.setSex(val);
                     break;
+                default:break;
             }
         }
 

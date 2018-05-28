@@ -70,7 +70,7 @@ public class LoginController {
         // 如果Session中验证信息非空，判断是否超过间隔时间
         Date lastDate = (Date) session.getAttribute(SESSION_KEY_VERIFY_DATE);
         if (lastDate != null) {
-            long waitTime = (new Date().getTime() - lastDate.getTime()) / 1000;
+            long waitTime = (System.currentTimeMillis() - lastDate.getTime()) / 1000;
             if (waitTime < VERITY_WAIT_TIME) {
                 return Msg.error("间隔时间过短");
             }

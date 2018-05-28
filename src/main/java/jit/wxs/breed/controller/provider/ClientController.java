@@ -45,6 +45,11 @@ public class ClientController {
         for(DeviceOrder deviceOrder : deviceOrders) {
             ids.add(deviceOrder.getUserId());
         }
+
+        if(ids.size() == 0) {
+            return null;
+        }
+
         // 获取所有用户信息
         List<SysUser> users = userService.selectList(new EntityWrapper<SysUser>()
                 .in("id", ids));

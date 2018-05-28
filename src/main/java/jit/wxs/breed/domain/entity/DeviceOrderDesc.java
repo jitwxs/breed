@@ -34,7 +34,7 @@ public class DeviceOrderDesc implements Serializable {
     /**
      * 备注
      */
-    private String remark;
+    private String desc;
 
 
     public String getId() {
@@ -77,23 +77,23 @@ public class DeviceOrderDesc implements Serializable {
         this.price = price;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getDesc() {
+        return desc;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     @Override
     public String toString() {
         return "DeviceOrderDesc{" +
-        ", id=" + id +
-        ", deviceOrder=" + deviceOrder +
-        ", deviceId=" + deviceId +
-        ", imei=" + imei +
-        ", price=" + price +
-        ", remark=" + remark +
-        "}";
+                "id='" + id + '\'' +
+                ", deviceOrder='" + deviceOrder + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", imei='" + imei + '\'' +
+                ", price=" + price +
+                ", desc='" + desc + '\'' +
+                '}';
     }
 }

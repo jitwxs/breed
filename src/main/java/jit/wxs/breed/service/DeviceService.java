@@ -22,4 +22,11 @@ public interface DeviceService extends IService<Device> {
     String getName(String id);
 
     List<Device> listByName(String name);
+
+    /**
+     * 查询设备是否存在
+     * @author jitwxs
+     * @since 2018/5/28 16:57
+     */
+    Boolean hasExist(String id);
 }

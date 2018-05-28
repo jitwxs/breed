@@ -58,18 +58,79 @@
             </form>
         </div>
         <div class="panel-body">
-            <!--<div id="toolbar" class="btn-group">-->
-                <!--<button id="btn_add" type="button" class="btn btn-default">-->
-                    <!--<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新增商品-->
-                <!--</button>-->
-                <!--<button id="btn_up" type="button" class="btn btn-default">-->
-                    <!--<span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span> 批量上架-->
-                <!--</button>-->
-                <!--<button id="btn_down" type="button" class="btn btn-default">-->
-                    <!--<span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> 批量下架-->
-                <!--</button>-->
-            <!--</div>-->
+            <div id="toolbar" class="btn-group">
+                <button id="btn_add" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> 新增订单
+                </button>
+                <button id="btn_delete" type="button" class="btn btn-default">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> 删除订单
+                </button>
+            </div>
             <table id="tb_order"></table>
+        </div>
+    </div>
+
+    <!-- 订单模态框 -->
+    <div class="modal fade" id="orderModel" tabindex="-1" role="dialog" aria-labelledby="orderModelLabel">
+        <div class="modal-dialog" role="document" style="width:800px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="orderModelLabel">新增订单</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="itemForm">
+                        <div id="itemFormHead">
+                            <div class="form-group">
+                                <div class="col-sm-11 col-sm-offset-1">
+                                    <p class="form-control-static">Tips：只支持查询<span style="color: red"> 已上架 </span>且<span style="color: red"> 库存大于0 </span>的商品ID</p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="rootItemTypeSelect">商品ID查询</label>
+                                <div class="col-sm-3">
+                                    <select id="rootItemTypeSelect" class="form-control"></select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select id="secondItemTypeSelect" class="form-control"></select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select id="itemNameSelect" class="form-control"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <p class="form-control-static" id="SelectItemId"></p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="clientName">客户名</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="clientName" name="clientName">
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="button" class="btn btn-success" onclick="addItem()">添加商品</button>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="button" class="btn btn-warning" onclick="deleteItem()">删除商品</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="remark">备注</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="remark" name="remark">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="itemFormContent">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="createOrderBtn">创建订单</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消订单</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -93,6 +154,32 @@
         //2、初始化Button的点击事件
         var oButtonInit = new ButtonInit();
         oButtonInit.Init();
+
+        // 解决Jquery 验证插件对多个name只校验第一个的问题
+        if ($.validator) {
+            $.validator.prototype.elements = function () {
+                var validator = this,
+                    rulesCache = {};
+
+                // select all valid inputs inside the form (no submit or reset buttons)
+                return $(this.currentForm)
+                    .find("input, select, textarea")
+                    .not(":submit, :reset, :image, [disabled]")
+                    .not(this.settings.ignore)
+                    .filter(function () {
+                        if (!this.name && validator.settings.debug && window.console) {
+                            console.error("%o has no name assigned", this);
+                        }
+                        //注释这行代码
+                        // select only the first element for each name, and only those with rules specified
+                        //if ( this.name in rulesCache || !validator.objectLength($(this).rules()) ) {
+                        //    return false;
+                        //}
+                        rulesCache[this.name] = true;
+                        return true;
+                    });
+            }
+        }
     });
 
     var TableInit = function () {
@@ -106,8 +193,9 @@
                 striped: true,                      //是否显示行间隔色
                 cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
                 pagination: true,                   //是否显示分页（*）
-                sortable: false,                    //是否启用排序
-                sortOrder: "asc",                   //排序方式
+                sortable: true,                    //是否启用排序
+                sortName: "createDate",             // 指定排序字段名，发送到后台
+                sortOrder: "desc",                   //排序方式
                 queryParams: oTableInit.queryParams,//传递参数（*）
                 sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
                 pageNumber:1,                       //初始化加载第一页，默认第一页
@@ -142,13 +230,6 @@
                 }, {
                     field: 'createDate',
                     title: '下单时间'
-                }, {
-                    field: 'id',
-                    title: '操作',
-                    width: 120,
-                    align: 'center',
-                    valign: 'middle',
-                    formatter: actionFormatter
                 }],
                 //注册加载子表的事件。index：表当前行的行索引;row：父表当前行的Json数据对象。$detail：当前行下面创建的新行里面的td对象。
                 onExpandRow: function (index, row, $detail) {
@@ -162,6 +243,8 @@
             return {   //这里的键的名字和后台参数必须一致
                 rows: params.limit,                         //页面大小
                 page: (params.offset / params.limit) + 1,   //页码
+                order: params.order,
+                sort: params.sort,
                 deviceName: $("#selectItemName").val(),
                 userName: $("#selectClientName").val(),
                 imei: $("#selectIMEI").val(),
@@ -197,8 +280,8 @@
                     field: 'price',
                     title: '价格'
                 }, {
-                    field: 'remark',
-                    title: '备注'
+                    field: 'desc',
+                    title: '描述'
                 } ]
             });
         };
@@ -210,22 +293,268 @@
         var oInit = new Object();
 
         oInit.Init = function () {
+            // 添加订单
+            $("#btn_add").click(function () {
+                sendJson("get", "/device/type/tree", null, false, function (res) {
+                    if(res.status) {
+                        var result = "";
+                        var data = res.data;
+                        for(var i=0;i<data.length; i++) {
+                            result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                        }
+                        $("#rootItemTypeSelect").html(result);
+
+                        // 一级改变的时候，清空二级和三级内容
+                        $("#secondItemTypeSelect").html("");
+                        $("#itemNameSelect").html("");
+
+                        if(data.length > 0 ) {
+                            // 准备二级下拉框
+                            prepareSecondSelectItemType(data[0].id);
+                        }
+
+                        $("#orderModel").modal('show');
+                    } else {
+                        $.message({message: res.info, type: 'error'});
+                    }
+                }, function () {
+                    $.message({message: '系统错误', type: 'error'});
+                });
+            });
+            // 删除订单
+            $("#btn_delete").click(function () {
+                var row = $('#tb_order').bootstrapTable("getSelections");
+                if (row.length > 0) {
+                    var ids = new Array();
+                    for (var i = 0; i < row.length; i++) {
+                        ids.push(row[i].id);
+                    }
+
+                    var msg = "即将删除订单：" + ids + "，删除后将无法还原，确认执行？";
+                    if(confirm(msg)) {
+                        sendArray("post", "/provider/order/delete", {"ids": ids}, false, function (res) {
+                            if (res.status) {
+                                $.message({message: '删除成功', type: 'success'});
+                                flushTable();
+                            } else {
+                                $.message({message: '删除失败', type: 'error'});
+                            }
+                        }, function () {
+                            $.message({message: '未知错误', type: 'error'});
+                        });
+                    }
+                }
+            });
         };
         return oInit;
     };
 
-    //操作栏的格式化
-    function actionFormatter(value, row, index) {
-        var id = "'" + value + "'";
-        var deviceId = "'" + row.deviceId + "'";
-
-        return '<button class="btn btn-xs btn-info" onclick="aboutItem('+deviceId+')" title="关于商品"><span class="glyphicon glyphicon-info-sign"></span></button>\n' +
-            '<button class="btn btn-xs btn-primary" onclick="editItem('+id+')" title="编辑商品"><span class="glyphicon glyphicon-pencil"></span></button></td>\n';
+    var num = 1;
+    function addItem() {
+        var html = '<fieldset>\n' +
+            '                            <legend>子商品'+num+'</legend>\n' +
+            '                            <div class="form-group">\n' +
+            '                                <label class="col-sm-1 control-label">商品</label>\n' +
+            '                                <div class="col-sm-3">\n' +
+            '                                    <input type="text" class="form-control" name="deviceId">\n' +
+            '                                </div>\n' +
+            '                                <label class="col-sm-1 control-label">IMEI</label>\n' +
+            '                                <div class="col-sm-3">\n' +
+            '                                    <input type="text" class="form-control" name="imei">\n' +
+            '                                </div>\n' +
+            '                                <label class="col-sm-1 control-label">价格</label>\n' +
+            '                                <div class="col-sm-3">\n' +
+            '                                    <input type="text" class="form-control" name="price">\n' +
+            '                                </div>\n' +
+            '                            </div>\n' +
+            '                           <div class="form-group">\n' +
+            '                                <label class="col-sm-1 control-label" >描述</label>\n' +
+            '                                <div class="col-sm-11">\n' +
+            '                                    <input type="text" class="form-control" name="desc">\n' +
+            '                                </div>\n' +
+            '                            </div>\n'+
+            '                        </fieldset>';
+        num++;
+        $("#itemFormContent").append(html);
     }
 
+    function deleteItem() {
+        if(num > 1) num--;
+        $("#itemFormContent").children().last().remove();
+    }
+
+    $().ready(function() {
+        // 纯数字：返回true
+        $.validator.addMethod("disNum", function(value, element) {
+            return !isNaN(value);
+        }, "不是数字");
+
+        // 校验用户名
+        $.validator.addMethod("validUsername", function(value, element) {
+            var flag = false;
+            sendJson("post", "/checkUsername", {username:value}, false, function (res) {
+                    flag = res.status;
+                },
+                function () {
+                    $.message({message: "系统错误", type: 'error'});
+                });
+            return !flag;
+        }, "该客户不存在");
+
+        // 校验设备ID
+        $.validator.addMethod("availabilityDevice", function(value, element) {
+            var flag = false;
+            sendJson("get", "/provider/item/availability/" + value, null, false, function (res) {
+                    flag = res.status;
+                },
+                function () {
+                    $.message({message: "系统错误", type: 'error'});
+                });
+            return flag;
+        }, "设备不可用");
+
+        // 订单验证
+        $("#itemForm").validate({
+            rules: {
+                clientName: {
+                    required: true,
+                    validUsername: true
+                },
+                deviceId: {
+                    required: true,
+                    availabilityDevice: true
+                },
+                imei: "required",
+                price: {
+                    required: true,
+                    disNum: true
+                }
+            },
+            messages: {
+                clientName: {
+                    required: "客户名不能为空",
+                    validUsername: "客户不存在"
+                },
+                deviceId: {
+                    required: "设备ID不能为空",
+                    availabilityDevice: "设备不可用"
+                },
+                imei: "设备IMEI不能为空",
+                price: {
+                    required: "价格不能为空",
+                    disNum: "价格不能是非数字"
+                }
+            },
+            submitHandler: function (form) {
+                sendJson("post", "/provider/order", $(form).serialize(), false, function (res) {
+                    if(res.status) {
+                        $.message({message: "创建成功", type: 'success'});
+
+                       $(form)[0].reset();
+                        $("#orderModel").modal('hide');
+                        flushTable();
+                    } else {
+                        $.message({message: res.info, type: 'error'});
+                    }
+                }, function () {
+                    $.message({message: '系统错误', type: 'error'});
+                });
+            }
+        });
+    });
+    
     function flushTable() {
         $("#tb_order").bootstrapTable('refresh',{url : '/provider/order/list'} );
     }
+
+    // 一级类别发生改变
+    $("#rootItemTypeSelect").change(function () {
+        var rootId = $("#rootItemTypeSelect").val();
+        prepareSecondSelectItemType(rootId);
+    });
+
+    // 二级类别发生改变
+    $("#secondItemTypeSelect").change(function () {
+        var rootId = $("#secondItemTypeSelect").val();
+        sendJson("get", "/provider/item/type/"+rootId, null, false, function (res) {
+            if(res.status) {
+                var result = "";
+                var data = res.data;
+                for(var i=0;i<data.length; i++) {
+                    result += '<option value="'+data[i].deviceId+'">'+data[i].device.name+'</option>\n';
+                }
+                $("#itemNameSelect").html(result);
+                if(data.length>0)
+                    $("#SelectItemId").html("当前选择的设备ID为：<span style='color:red'>"+data[0].deviceId+"</span>");
+                else
+                    $("#SelectItemId").html("");
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    });
+
+    // 准备二级菜单和内容
+    function prepareSecondSelectItemType(rootId) {
+        sendJson("get", "/device/type/tree/"+rootId, null, false, function (res) {
+            if(res.status) {
+                var result = "";
+                var data = res.data;
+                for(var i=0;i<data.length; i++) {
+                    result += '<option value="'+data[i].id+'">'+data[i].name+'</option>\n';
+                }
+                $("#secondItemTypeSelect").html(result);
+
+                $("#itemNameSelect").html("");
+                if(data.length > 0) {
+                    sendJson("get", "/provider/item/type/"+data[0].id, null, false, function (res) {
+                        if(res.status) {
+                            var result = "";
+                            var data = res.data;
+                            for(var i=0;i<data.length; i++) {
+                                result += '<option value="'+data[i].deviceId+'">'+data[i].device.name+'</option>\n';
+                            }
+                            $("#itemNameSelect").html(result);
+
+                            if(data.length>0)
+                                $("#SelectItemId").html("当前选择的设备ID为：<span style='color:red'>"+data[0].deviceId+"</span>");
+                            else
+                                $("#SelectItemId").html("");
+                        } else {
+                            $.message({message: res.info, type: 'error'});
+                        }
+                    }, function () {
+                        $.message({message: '系统错误', type: 'error'});
+                    });
+                } else {
+                    $("#SelectItemId").html("");
+                }
+            } else {
+                $.message({message: res.info, type: 'error'});
+            }
+        }, function () {
+            $.message({message: '系统错误', type: 'error'});
+        });
+    }
+
+    // 监听商品下拉框改变
+    $("#itemNameSelect").change(function () {
+        var id = $(this).val();
+        alert(id);
+        $("#SelectItemId").html("当前选择的设备ID为：<span style='color:red'>"+id+"</span>");
+    });
+
+    $("#createOrderBtn").click(function () {
+        var itemLength = $("#itemFormContent").children().length;
+        if(itemLength <= 0) {
+            $.message({message: '订单中至少要包括一件商品', type: 'warning'});
+            return false;
+        }
+
+        $("#itemForm").submit();
+    });
 </script>
 
 </body>

@@ -36,4 +36,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceMapper.selectList(new EntityWrapper<Device>()
             .like("name", name));
     }
+
+    @Override
+    public Boolean hasExist(String id) {
+        Device device = deviceMapper.selectById(id);
+
+        return device != null;
+    }
 }

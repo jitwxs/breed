@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 供应商设备表 服务实现类
@@ -25,5 +27,15 @@ public class ProviderDeviceServiceImpl extends ServiceImpl<ProviderDeviceMapper,
         ProviderDevice providerDevice = providerDeviceMapper.selectById(id);
         providerDevice.setStatus(status);
         providerDeviceMapper.updateById(providerDevice);
+    }
+
+    @Override
+    public List<ProviderDevice> selectByType(String providerId, Integer type) {
+        return providerDeviceMapper.selectByType(providerId, type);
+    }
+
+    @Override
+    public Boolean hasAvailability(String providerId, String id) {
+        return providerDeviceMapper.hasAvailability(providerId, id);
     }
 }

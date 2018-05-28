@@ -11,7 +11,7 @@
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 22/05/2018 23:42:38
+ Date: 28/05/2018 18:51:34
 */
 
 SET NAMES utf8mb4;
@@ -81,9 +81,9 @@ CREATE TABLE `device_order`  (
 -- ----------------------------
 -- Records of device_order
 -- ----------------------------
-INSERT INTO `device_order` VALUES ('a13213af23af3a2vaf23bf61x33134', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 267.50, '无发票', '2018-05-02 18:21:33', NULL);
-INSERT INTO `device_order` VALUES ('ac8f299afafaba83cafa2bf61xx537', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 185.40, NULL, '2018-05-17 18:19:55', NULL);
-INSERT INTO `device_order` VALUES ('afqr12131dac1231sac7yfaovad13', '74d8f29914414d3d83c4072bf61b2537', '908ed25218dc4be588f285e5fed13b51', 553.52, NULL, '2018-05-17 18:23:18', NULL);
+INSERT INTO `device_order` VALUES ('152750019592470', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 369.50, '开张大吉', '2018-05-28 17:36:35', NULL);
+INSERT INTO `device_order` VALUES ('152750034426086', '74d8f29914414d3d83c4072bf61b2537', '7b3e48298a0b4725a2313fa0b85c0774', 388.00, NULL, '2018-05-28 17:29:04', NULL);
+INSERT INTO `device_order` VALUES ('152750060233711', '74d8f29914414d3d83c4072bf61b2537', 'b2c440caee214af68fd6731f1a388e6f', 2287.80, '新客户', '2018-05-28 17:43:22', NULL);
 
 -- ----------------------------
 -- Table structure for device_order_desc
@@ -95,7 +95,7 @@ CREATE TABLE `device_order_desc`  (
   `device_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备号',
   `imei` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备串号',
   `price` float(10, 2) NOT NULL DEFAULT 0.00 COMMENT '价格',
-  `remark` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `desc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `fk_device_order`(`device_order`) USING BTREE,
   CONSTRAINT `fk_device_order` FOREIGN KEY (`device_order`) REFERENCES `device_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -104,9 +104,11 @@ CREATE TABLE `device_order_desc`  (
 -- ----------------------------
 -- Records of device_order_desc
 -- ----------------------------
-INSERT INTO `device_order_desc` VALUES ('afagvasgwet1237yfaovad13', 'a13213af23af3a2vaf23bf61x33134', '1', '12GYT3', 123.50, '这是该订单的第一件设备');
-INSERT INTO `device_order_desc` VALUES ('afagvasgwet1237yfaovad14', 'a13213af23af3a2vaf23bf61x33134', '2', '1XA3GY', 121.00, NULL);
-INSERT INTO `device_order_desc` VALUES ('hvakafaerkqavaz2341fcas14', 'a13213af23af3a2vaf23bf61x33134', '3', 'MHF54Z', 23.00, '优惠商品');
+INSERT INTO `device_order_desc` VALUES ('2564919f3bd84281b9f5718372162392', '152750060233711', '2', '2XSNJ9LFZ5', 999.00, '要求快速送达');
+INSERT INTO `device_order_desc` VALUES ('304bfa617106414e97ba1741915df6f2', '152750019592470', '1', 'QAJU765V0P', 102.30, '没有描述');
+INSERT INTO `device_order_desc` VALUES ('7fda0af5849947c1a6a434e1136f2c02', '152750060233711', '5', 'GYTVLGH89P', 1288.80, '没有描述');
+INSERT INTO `device_order_desc` VALUES ('856b03a064a04211b5d6b65887bfa734', '152750034426086', '4', '3DF8JIP0ND', 388.00, '首位用户');
+INSERT INTO `device_order_desc` VALUES ('c70d997d8bb7428d96abf901a7ed8f89', '152750019592470', '3', 'GYTVLGH89P', 267.20, '假装有描述');
 
 -- ----------------------------
 -- Table structure for device_type
@@ -190,12 +192,12 @@ CREATE TABLE `provider_device`  (
 -- ----------------------------
 -- Records of provider_device
 -- ----------------------------
-INSERT INTO `provider_device` VALUES ('0ea780beaf3d4ef09f671307dc0ca3fb', '74d8f29914414d3d83c4072bf61b2537', '4', 20, NULL, '<div><h2><span style=\"color: rgb(194, 79, 74);\"><span style=\"background-color: rgb(255, 255, 255);\">富农喷洒</span></span>就是好!!<img src=\"http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png\" alt=\"[坏笑]\" data-w-e=\"1\"></h2></div><img src=\"https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/7578349632_515464872.400x400.jpg\" style=\"max-width:100%;\"><p><br></p>', 1, '2018-05-22 18:37:32', '2018-05-22 19:05:27');
-INSERT INTO `provider_device` VALUES ('12x8f29914414d3s2vsd72bf61b2537', '74d8f29914414d3d83c4072bf61b2537', '1', 110, 26, '', 0, '2018-05-17 15:49:10', '2018-05-18 17:14:32');
-INSERT INTO `provider_device` VALUES ('23qagf29914414d3ssqh72bf61b227', '74d8f29914414d3d83c4072bf61b2537', '2', 60, 12, '', 1, '2018-05-17 16:09:03', '2018-05-18 17:14:21');
-INSERT INTO `provider_device` VALUES ('38a45986a39e4779ac5647f21a7cdff4', '74d8f29914414d3d83c4072bf61b2537', '5', 25, NULL, '哇咔咔                                    ', 1, '2018-05-17 17:35:14', '2018-05-18 15:24:45');
+INSERT INTO `provider_device` VALUES ('0ea780beaf3d4ef09f671307dc0ca3fb', '74d8f29914414d3d83c4072bf61b2537', '1', 10, NULL, '<div><h2><span style=\"font-family: 微软雅黑;\"><span style=\"color: rgb(194, 79, 74);\"><span style=\"background-color: rgb(255, 255, 255);\">富农喷洒</span></span>就是好!!<img src=\"http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png\" alt=\"[坏笑]\" data-w-e=\"1\"></span></h2></div><img src=\"https://jitwxs-1252917613.cos.ap-shanghai.myqcloud.com/breed/pic/7578349632_515464872.400x400.jpg\" style=\"max-width: 100%;\" width=\"192\" height=\"209\">', 0, '2018-05-22 18:37:32', '2018-05-28 18:50:33');
+INSERT INTO `provider_device` VALUES ('12x8f29914414d3s2vsd72bf61b2537', '74d8f29914414d3d83c4072bf61b2537', '2', 110, 26, '', 1, '2018-05-17 15:49:10', '2018-05-18 17:14:32');
+INSERT INTO `provider_device` VALUES ('23qagf29914414d3ssqh72bf61b227', '74d8f29914414d3d83c4072bf61b2537', '3', 60, 12, '', 1, '2018-05-17 16:09:03', '2018-05-18 17:14:21');
+INSERT INTO `provider_device` VALUES ('38a45986a39e4779ac5647f21a7cdff4', '74d8f29914414d3d83c4072bf61b2537', '4', 25, NULL, '哇咔咔                                    ', 1, '2018-05-17 17:35:14', '2018-05-18 15:24:45');
 INSERT INTO `provider_device` VALUES ('54206997360743e6820478e617316d60', '74d8f29914414d3d83c4072bf61b2537', '5', 12, NULL, '                    1222                ', 1, '2018-05-18 17:14:51', NULL);
-INSERT INTO `provider_device` VALUES ('afa2f235143sbaet23edasqh72bf54', '74d8f29914414d3d83c4072bf61b2537', '3', 23, 0, NULL, 0, '2018-05-17 16:46:46', '2018-05-17 17:13:00');
+INSERT INTO `provider_device` VALUES ('afa2f235143sbaet23edasqh72bf54', '7b3e48298a0b4725a2313fa0b85c0774', '2', 23, 0, NULL, 0, '2018-05-17 16:46:46', '2018-05-17 17:13:00');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -257,7 +259,7 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('0f4653d8f8fb4f3098730ddaf14c0325', '908ed25218dc4be588f285e5fed13b51', 'ROLE_USER');
+INSERT INTO `sys_user_role` VALUES ('0f4653d8f8fb4f3098730ddaf14c0325', '908ed25218dc4be588f285e5fed13b51', 'ROLE_PROVIDER');
 INSERT INTO `sys_user_role` VALUES ('9155a7e2f46d4f7999cb1f062c480b47', 'b2c440caee214af68fd6731f1a388e6f', 'ROLE_USER');
 INSERT INTO `sys_user_role` VALUES ('99c2b9417dfa4786b6f60b6c3f7f46fe', '74d8f29914414d3d83c4072bf61b2537', 'ROLE_PROVIDER');
 INSERT INTO `sys_user_role` VALUES ('b8d5971f0a7441ee87532cacsacbc85', '7b3e48298a0b4725a2313fa0b85c0774', 'ROLE_USER');
@@ -289,9 +291,9 @@ CREATE TABLE `user_device`  (
 -- Records of user_device
 -- ----------------------------
 INSERT INTO `user_device` VALUES ('002eb711b190428387c8e580fb5a2476', '908ed25218dc4be588f285e5fed13b51', NULL, '1', 'QAJU765V0P', '{\"温度\":\"23.1°C\",\"溶氧浓度\":\"12.3mg/L\"}', 0, '2018-04-27 13:48:27', '2018-05-10 09:08:10');
-INSERT INTO `user_device` VALUES ('14c9c4d79b564d5bb606ab620311fae8', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '5', 'GYTVLGH89P', '{\"剩余时间\":\"23min\",\"剩余药量\":\"2303g\"}', 1, '2018-04-27 13:48:06', '2018-05-18 17:11:40');
+INSERT INTO `user_device` VALUES ('14c9c4d79b564d5bb606ab620311fae8', 'b2c440caee214af68fd6731f1a388e6f', NULL, '5', 'GYTVLGH89P', '{\"剩余时间\":\"23min\",\"剩余药量\":\"2303g\"}', 1, '2018-04-27 13:48:06', '2018-05-18 17:11:40');
 INSERT INTO `user_device` VALUES ('4f6b73fbd12d43449b7bae1d10d887d6', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '1', '2D6JG9LM5W', '{\"温度\":\"21.3°C\",\"溶氧浓度\":\"18.5mg/L\"}', 0, '2018-04-27 13:46:35', '2018-05-18 17:11:05');
-INSERT INTO `user_device` VALUES ('813180a2c75e4873a8dbedf8e5e8bfd0', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '2', '2XSNJ9LFZ5', NULL, 0, '2018-05-04 10:52:49', '2018-05-18 17:11:05');
+INSERT INTO `user_device` VALUES ('813180a2c75e4873a8dbedf8e5e8bfd0', 'b2c440caee214af68fd6731f1a388e6f', NULL, '2', '2XSNJ9LFZ5', NULL, 0, '2018-05-04 10:52:49', '2018-05-18 17:11:05');
 INSERT INTO `user_device` VALUES ('820428b4e4ca43c1b065da9af183e187', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '1', 'QBVG54VKI8', '{\"温度\":\"18.8°C\",\"溶氧浓度\":\"16.3mg/L\"}', 1, '2018-04-27 13:48:53', '2018-05-18 17:11:05');
 INSERT INTO `user_device` VALUES ('b51fe0729abd40b99c5ce8d1b4815b23', '7b3e48298a0b4725a2313fa0b85c0774', '85f020cf1ca74a3785a058b28c3bdb88', '1', 'SCH4871VG8', '{\"温度\":\"22.5°C\",\"溶氧浓度\":\"13.2mg/L\"}', 1, '2018-05-04 10:53:17', '2018-05-18 17:11:05');
 INSERT INTO `user_device` VALUES ('c98216b5ac1e4c79b1a68594c7f93ed6', '7b3e48298a0b4725a2313fa0b85c0774', NULL, '3', 'S35HBV9KH3', '{\"设备温度\":\"16.23°C\",\"溶氧浓度\":\"16.65mg/L\"}', 1, '2018-04-27 13:46:55', '2018-05-17 17:15:37');
