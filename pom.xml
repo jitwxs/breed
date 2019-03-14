@@ -76,11 +76,6 @@
             <artifactId>mybatisplus-spring-boot-starter</artifactId>
             <version>1.0.5</version>
         </dependency>
-        <!--&lt;!&ndash; Active MQ &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-activemq</artifactId>-->
-        <!--</dependency>-->
         <!-- ActiveMQ连接池 -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
