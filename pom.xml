@@ -89,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
+            <artifactId>activemq-spring</artifactId>
             <version>5.13.3</version>
         </dependency>
         <!-- 腾讯云图片上传 -->
